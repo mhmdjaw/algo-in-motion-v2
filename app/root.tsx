@@ -13,15 +13,12 @@ export const links: LinksFunction = () => {
     { rel: 'stylesheet', href: appStyles },
     { rel: 'stylesheet', href: mantineStyles },
     /* Font */
+    /* font */
     { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
-    {
-      rel: 'preconnect',
-      href: 'https://fonts.gstatic.com',
-      crossOrigin: 'anonymous'
-    },
+    { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossOrigin: 'anonymous' },
     {
       rel: 'stylesheet',
-      href: 'https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;400;500;600;700&display=swap'
+      href: 'https://fonts.googleapis.com/css2?family=Erica+One&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap'
     },
     /* favicon */
     { rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' }

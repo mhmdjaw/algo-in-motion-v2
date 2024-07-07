@@ -1,3 +1,4 @@
+import { Title } from '@mantine/core'
 import type { MetaFunction } from '@remix-run/node'
 
 export const meta: MetaFunction = () => {
@@ -7,7 +8,7 @@ export const meta: MetaFunction = () => {
 export default function Landing() {
   return (
     <div className="font-sans p-4">
-      <h1 className="text-3xl">Welcome to Remix (SPA Mode)</h1>
+      <Title className="text-3xl">Explanation</Title>
       <ul className="list-disc mt-4 pl-6 space-y-2">
         <li>
           <a
