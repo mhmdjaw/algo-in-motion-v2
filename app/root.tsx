@@ -2,12 +2,16 @@ import type { LinksFunction } from '@remix-run/node'
 import { isRouteErrorResponse, Links, Meta, Outlet, Scripts, ScrollRestoration, useRouteError } from '@remix-run/react'
 import resetStyles from './styles/normalize.css?url'
 import appStyles from './styles/app.css?url'
+import mantineStyles from '@mantine/core/styles.css?url'
+import { ColorSchemeScript, MantineProvider } from '@mantine/core'
+import theme, { resolver } from './theme'
 
 export const links: LinksFunction = () => {
   return [
     /* Global styles */
     { rel: 'stylesheet', href: resetStyles },
     { rel: 'stylesheet', href: appStyles },
+    { rel: 'stylesheet', href: mantineStyles },
     /* Font */
     { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
     {
@@ -32,9 +36,12 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <Meta />
         <Links />
+        <ColorSchemeScript />
       </head>
       <body>
-        {children}
+        <MantineProvider theme={theme} cssVariablesResolver={resolver} defaultColorScheme="light">
+          {children}
+        </MantineProvider>
         <ScrollRestoration />
         <Scripts />
       </body>
@@ -49,10 +56,6 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
 export default function App() {
   return <Outlet />
-}
-
-export function HydrateFallback() {
-  return <></>
 }
 
 export function ErrorBoundary() {
@@ -88,4 +91,8 @@ export function ErrorBoundary() {
       <p>{errorMessage}</p>
     </>
   )
+}
+
+export function HydrateFallback() {
+  return <></>
 }

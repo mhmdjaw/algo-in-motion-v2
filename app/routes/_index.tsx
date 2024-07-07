@@ -4,7 +4,7 @@ export const meta: MetaFunction = () => {
   return [{ title: 'Algo In Motion' }, { name: 'description', content: 'Welcome to Algo In Motion, have fun!' }]
 }
 
-export default function Index() {
+export default function Landing() {
   return (
     <div className="font-sans p-4">
       <h1 className="text-3xl">Welcome to Remix (SPA Mode)</h1>
