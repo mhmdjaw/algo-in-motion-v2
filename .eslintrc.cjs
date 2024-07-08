@@ -66,7 +66,11 @@ module.exports = {
           }
         }
       },
-      extends: ['plugin:@typescript-eslint/recommended', 'plugin:import/recommended', 'plugin:import/typescript']
+      extends: [
+        'plugin:@typescript-eslint/recommended',
+        'plugin:import/recommended',
+        'plugin:import/typescript'
+      ]
     },
 
     // Node
@@ -86,7 +90,7 @@ module.exports = {
         semi: false,
         trailingComma: 'none',
         singleQuote: true,
-        printWidth: 120,
+        printWidth: 100,
         endOfLine: 'auto'
       }
     ]
