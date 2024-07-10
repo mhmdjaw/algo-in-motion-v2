@@ -1,5 +1,13 @@
 import type { LinksFunction } from '@remix-run/node'
-import { isRouteErrorResponse, Links, Meta, Outlet, Scripts, ScrollRestoration, useRouteError } from '@remix-run/react'
+import {
+  isRouteErrorResponse,
+  Links,
+  Meta,
+  Outlet,
+  Scripts,
+  ScrollRestoration,
+  useRouteError
+} from '@remix-run/react'
 import resetStyles from './styles/normalize.css?url'
 import appStyles from './styles/app.css?url'
 import mantineStyles from '@mantine/core/styles.css?url'
@@ -33,10 +41,10 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <Meta />
         <Links />
-        <ColorSchemeScript />
+        <ColorSchemeScript defaultColorScheme="dark" />
       </head>
       <body>
-        <MantineProvider theme={theme} cssVariablesResolver={resolver} defaultColorScheme="light">
+        <MantineProvider theme={theme} cssVariablesResolver={resolver} defaultColorScheme="dark">
           {children}
         </MantineProvider>
         <ScrollRestoration />
@@ -75,15 +83,15 @@ export function ErrorBoundary() {
 
   return (
     <>
-      {/* <div className="route-error">
-              <h1>Oops</h1>
-              <h2>{errorStatus}</h2>
-              {errorMessage && (
-                <fieldset>
-                  <pre>{errorMessage}</pre>
-                </fieldset>
-              )}
-            </div> */}
+      <div className="route-error">
+        <h1>Oops</h1>
+        <h2>{errorStatus}</h2>
+        {errorMessage && (
+          <fieldset>
+            <pre>{errorMessage}</pre>
+          </fieldset>
+        )}
+      </div>
       {/* <ErrorLayout message={errorMessage} /> */}
       <p>{errorMessage}</p>
     </>

@@ -1,0 +1,87 @@
+.main {
+  height: 100dvh;
+  width: 100dvw;
+  position: relative;
+  overflow: hidden;
+}
+
+.logoContainer {
+  position: absolute;
+  display: flex;
+  left: 50%;
+  bottom: 50%;
+  width: 60vmin;
+  transform: translateX(5%) translateY(50%);
+  stroke-width: rem(0.5);
+
+  @mixin smaller-than $mantine-breakpoint-lg {
+    width: 50vmin;
+  }
+
+  @mixin smaller-than $mantine-breakpoint-sm {
+    width: 70vmin;
+    transform: translateX(-50%) translateY(-5%);
+  }
+}
+
+.contentContainer {
+  position: absolute;
+  right: 55%;
+  top: 50%;
+  transform: translateY(-50%);
+
+  @mixin smaller-than $mantine-breakpoint-sm {
+    right: 50%;
+    top: 50%;
+    transform: translateX(50%);
+    text-align: center;
+  }
+}
+
+.titleContainer {
+  overflow: hidden;
+}
+
+.contentContainer h1 {
+  font-size: rem(90);
+
+  @mixin smaller-than $mantine-breakpoint-lg {
+    font-size: rem(70);
+  }
+
+  @mixin smaller-than $mantine-breakpoint-sm {
+    font-size: rem(50);
+  }
+}
+
+.button {
+  width: rem(250);
+
+  @mixin smaller-than $mantine-breakpoint-lg {
+    width: rem(200);
+  }
+
+  @mixin smaller-than $mantine-breakpoint-sm {
+    width: rem(150);
+  }
+}
+
+.contentContainer :global(span.pink) {
+  color: #f69489;
+}
+
+.contentContainer :global(span.blue) {
+  color: var(--mantine-color-blue-7);
+}
+
+.contentContainer :global(span.yellow) {
+  color: #ffd086;
+}
+
+.contentContainer :global(span.green) {
+  color: #8ebc8e;
+}
+
+.contentContainer :global(span.red) {
+  color: #ed6571;
+}

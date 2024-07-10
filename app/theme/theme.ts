@@ -8,6 +8,7 @@ import {
   Button,
   Alert
 } from '@mantine/core'
+import buttonStyles from './button.module.css'
 
 // const variantColorResolver: VariantColorsResolver = (input) => {
 //   const defaultResolvedColors = defaultVariantColorsResolver(input)
@@ -76,6 +77,9 @@ const theme = createTheme({
       '#2b5566'
     ]
   },
+  autoContrast: true,
+  primaryShade: 7,
+  luminanceThreshold: 0.3,
   primaryColor: 'pink',
   other: {
     fontWeights: {
@@ -93,6 +97,27 @@ const theme = createTheme({
         root: {
           transition: 'color .2s, background .2s'
         }
+      },
+      vars: (_theme, props) => {
+        if (props.color) {
+          return {
+            root: {
+              '--button-bg': `var(--mantine-color-${props.color}-3)`,
+              '--button-hover': `var(--mantine-color-${props.color}-6)`
+            }
+          }
+        }
+
+        return { root: {} }
+      },
+      classNames: (_theme, props) => {
+        if (props.variant === 'retro') {
+          return {
+            root: buttonStyles.retroRoot
+          }
+        }
+
+        return {}
       }
     }),
     Alert: Alert.extend({
