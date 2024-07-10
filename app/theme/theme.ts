@@ -103,7 +103,7 @@ const theme = createTheme({
           return {
             root: {
               '--button-bg': `var(--mantine-color-${props.color}-3)`,
-              '--button-hover': `var(--mantine-color-${props.color}-6)`
+              '--button-hover': `var(--mantine-color-${props.color}-7)`
             }
           }
         }
@@ -138,13 +138,7 @@ export const resolver: CSSVariablesResolver = (theme) => ({
     '--mantine-fw-b': theme.other.fontWeights.bold,
     '--mantine-header-height': theme.other.headerHeight
   },
-  light: {
-    // '--mantine-color-anchor': 'var(--mantine-color-text)',
-    // '--mantine-color-dark-filled': 'var(--mantine-color-text)',
-    // '--mantine-color-dark-filled-hover': 'var(--mantine-color-text)',
-    // '--mantine-color-dark-outline': 'var(--mantine-color-text)',
-    // '--mantine-color-dark-light-color': 'var(--mantine-color-text)'
-  },
+  light: {},
   dark: {}
 })
 

@@ -4,7 +4,7 @@ import * as variants from './_index.variants'
 import { Logo } from '~/assets/svg'
 import { motion } from 'framer-motion'
 import { Button, Stack, Title, useMantineTheme } from '@mantine/core'
-import { useMediaQuery } from '~/hooks'
+import { useMediaQuery } from '@mhmdjawhar/react-hooks'
 
 export const meta: MetaFunction = () => {
   return [
@@ -25,6 +25,8 @@ export default function Landing() {
 function LogoSection() {
   const theme = useMantineTheme()
   const isMobile = useMediaQuery(`(max-width: ${theme.breakpoints.sm})`)
+
+  console.log(isMobile)
 
   return (
     <motion.div
