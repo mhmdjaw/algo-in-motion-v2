@@ -5,6 +5,7 @@ import { Logo } from '~/assets/svg'
 import { motion } from 'framer-motion'
 import { Button, Stack, Title, useMantineTheme } from '@mantine/core'
 import { useMediaQuery } from '@mhmdjawhar/react-hooks'
+import { Link } from '@remix-run/react'
 
 export const meta: MetaFunction = () => {
   return [
@@ -25,8 +26,6 @@ export default function Landing() {
 function LogoSection() {
   const theme = useMantineTheme()
   const isMobile = useMediaQuery(`(max-width: ${theme.breakpoints.sm})`)
-
-  console.log(isMobile)
 
   return (
     <motion.div
@@ -64,7 +63,13 @@ function ContentSection() {
         </div>
       </Stack>
       <motion.div variants={variants.button}>
-        <Button className={styles.button} size="xl" variant="retro">
+        <Button
+          component={Link}
+          to="/algorithms/quick-sort"
+          className={styles.button}
+          size="xl"
+          variant="retro"
+        >
           Start
         </Button>
       </motion.div>

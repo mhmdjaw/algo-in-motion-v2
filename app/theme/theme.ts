@@ -93,11 +93,6 @@ const theme = createTheme({
   // variantColorResolver,
   components: {
     Button: Button.extend({
-      styles: {
-        root: {
-          transition: 'color .2s, background .2s'
-        }
-      },
       vars: (_theme, props) => {
         if (props.color) {
           return {
