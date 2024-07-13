@@ -6,15 +6,15 @@ export function Options() {
     <div className={styles.container}>
       <Stack className={styles.optionContainer}>
         <Text className={styles.label}>Speed</Text>
-        <Slider w="100%" />
+        <Slider w="100%" defaultValue={60} />
       </Stack>
       <Stack className={styles.optionContainer}>
         <Text className={styles.label}>Edges</Text>
-        <Slider disabled w="100%" />
+        <Slider disabled w="100%" defaultValue={60} />
       </Stack>
       <Stack className={styles.optionContainer}>
         <Text className={styles.label}>Cities</Text>
-        <Slider w="100%" />
+        <Slider w="100%" defaultValue={60} />
       </Stack>
     </div>
   )
