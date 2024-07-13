@@ -1,0 +1,35 @@
+.container {
+  display: flex;
+  margin: rem(80) auto;
+  width: 100%;
+  gap: 2.5vw;
+  padding: 0 5vw;
+  @mixin smaller-than $mantine-breakpoint-sm {
+    margin: rem(50) auto;
+    gap: rem(16);
+    padding: 0 rem(16);
+  }
+}
+
+.container > div {
+  flex: 1 1 0;
+}
+
+.optionContainer {
+  flex: 1 1 0;
+  padding: rem(16);
+  background-color: var(--mantine-color-dark-8);
+  border: var(--mantine-border-width) solid var(--mantine-color-dark-5);
+  border-radius: rem(4);
+  @mixin smaller-than $mantine-breakpoint-sm {
+    padding: rem(8);
+  }
+}
+
+.label {
+  font-size: rem(20);
+  font-weight: var(--mantine-fw-sb);
+  @mixin smaller-than $mantine-breakpoint-sm {
+    font-size: 1rem;
+  }
+}

@@ -1,0 +1,4 @@
+.label {
+  background-color: var(--slider-color);
+  font-weight: var(--mantine-fw-md);
+}
