@@ -54,6 +54,10 @@
   }
 }
 
+.buttonContainer {
+  display: inline-block;
+}
+
 .button {
   width: rem(250);
 

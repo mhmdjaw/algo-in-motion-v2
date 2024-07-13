@@ -6,9 +6,13 @@ import {
   // defaultVariantColorsResolver,
   // parseThemeColor,
   Button,
-  Alert
+  Alert,
+  Kbd,
+  Slider
 } from '@mantine/core'
 import buttonStyles from './button.module.css'
+import kbdStyles from './kbd.module.css'
+import sliderStyles from './slider.module.css'
 
 // const variantColorResolver: VariantColorsResolver = (input) => {
 //   const defaultResolvedColors = defaultVariantColorsResolver(input)
@@ -82,6 +86,7 @@ const theme = createTheme({
   luminanceThreshold: 0.3,
   primaryColor: 'pink',
   other: {
+    borderWidth: rem(1),
     fontWeights: {
       regular: '400',
       medium: '500',
@@ -106,13 +111,29 @@ const theme = createTheme({
         return { root: {} }
       },
       classNames: (_theme, props) => {
-        if (props.variant === 'retro') {
+        if (props.variant === 'retro-primary') {
           return {
-            root: buttonStyles.retroRoot
+            root: buttonStyles.retroPrimaryRoot
+          }
+        }
+
+        if (props.variant === 'retro-secondary') {
+          return {
+            root: buttonStyles.retroSecondaryRoot
           }
         }
 
         return {}
+      }
+    }),
+    Kbd: Kbd.extend({
+      classNames: {
+        root: kbdStyles.kbdRoot
+      }
+    }),
+    Slider: Slider.extend({
+      classNames: {
+        label: sliderStyles.label
       }
     }),
     Alert: Alert.extend({
@@ -127,6 +148,7 @@ const theme = createTheme({
 
 export const resolver: CSSVariablesResolver = (theme) => ({
   variables: {
+    '--mantine-border-width': theme.other.borderWidth,
     '--mantine-fw-rg': theme.other.fontWeights.regular,
     '--mantine-fw-md': theme.other.fontWeights.medium,
     '--mantine-fw-sb': theme.other.fontWeights.semiBold,

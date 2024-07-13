@@ -62,13 +62,13 @@ function ContentSection() {
           </MotionTitle>
         </div>
       </Stack>
-      <motion.div variants={variants.button}>
+      <motion.div className={styles.buttonContainer} variants={variants.button}>
         <Button
           component={Link}
           to="/algorithms/quick-sort"
           className={styles.button}
           size="xl"
-          variant="retro"
+          variant="retro-primary"
         >
           Start
         </Button>

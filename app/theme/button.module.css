@@ -1,29 +1,45 @@
-.retroRoot {
+.retroPrimaryRoot {
   color: var(--mantine-color-black);
   background-color: var(--button-bg, var(--mantine-primary-color-3));
   box-shadow:
-    rem(-8) rem(8) 0 rem(0) var(--button-hover, var(--mantine-primary-color-7)),
-    rem(-7) rem(7) 0 rem(0) var(--button-hover, var(--mantine-primary-color-7)),
-    rem(-6) rem(6) 0 rem(0) var(--button-hover, var(--mantine-primary-color-7)),
-    rem(-5) rem(5) 0 rem(0) var(--button-hover, var(--mantine-primary-color-7)),
-    rem(-4) rem(4) 0 rem(0) var(--button-hover, var(--mantine-primary-color-7)),
-    rem(-3) rem(3) 0 rem(0) var(--button-hover, var(--mantine-primary-color-7)),
-    rem(-2) rem(2) 0 rem(0) var(--button-hover, var(--mantine-primary-color-7));
+    rem(-8) rem(8) 0 0 var(--button-hover, var(--mantine-primary-color-7)),
+    rem(-7) rem(7) 0 0 var(--button-hover, var(--mantine-primary-color-7)),
+    rem(-6) rem(6) 0 0 var(--button-hover, var(--mantine-primary-color-7)),
+    rem(-5) rem(5) 0 0 var(--button-hover, var(--mantine-primary-color-7)),
+    rem(-4) rem(4) 0 0 var(--button-hover, var(--mantine-primary-color-7)),
+    rem(-3) rem(3) 0 0 var(--button-hover, var(--mantine-primary-color-7)),
+    rem(-2) rem(2) 0 0 var(--button-hover, var(--mantine-primary-color-7));
 }
 
-.retroRoot:active {
+.retroPrimaryRoot:active {
   transform: translateY(rem(4)) translateX(rem(-4));
   box-shadow:
-    rem(-4) rem(4) 0 rem(0) var(--button-hover, var(--mantine-primary-color-7)),
-    rem(-3) rem(3) 0 rem(0) var(--button-hover, var(--mantine-primary-color-7)),
-    rem(-2) rem(2) 0 rem(0) var(--button-hover, var(--mantine-primary-color-7));
+    rem(-4) rem(4) 0 0 var(--button-hover, var(--mantine-primary-color-7)),
+    rem(-3) rem(3) 0 0 var(--button-hover, var(--mantine-primary-color-7)),
+    rem(-2) rem(2) 0 0 var(--button-hover, var(--mantine-primary-color-7));
 }
 
-.retroRoot:hover {
+.retroSecondaryRoot {
+  color: var(--mantine-color-black);
+  background-color: var(--button-bg, var(--mantine-primary-color-3));
+  border: rem(2) solid var(--button-hover, var(--mantine-primary-color-7));
+  border-top: rem(1) solid var(--button-hover, var(--mantine-primary-color-7));
+  border-bottom: none;
+  box-shadow: 0 rem(8) 0 0 var(--button-hover, var(--mantine-primary-color-7));
+}
+
+.retroSecondaryRoot:active {
+  transform: translateY(rem(4));
+  box-shadow: 0 rem(4) 0 0 var(--button-hover, var(--mantine-primary-color-7));
+}
+
+.retroPrimaryRoot:hover,
+.retroSecondaryRoot:hover {
   background-color: var(--button-bg, var(--mantine-primary-color-3));
   color: var(--mantine-color-black);
 }
 
-.retroRoot:focus-visible {
+.retroPrimaryRoot:focus-visible,
+.retroSecondaryRoot:focus-visible {
   outline-color: var(--mantine-primary-color-3);
 }
