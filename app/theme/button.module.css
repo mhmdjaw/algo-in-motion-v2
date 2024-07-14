@@ -31,6 +31,10 @@
 .retroSecondaryRoot:active {
   transform: translateY(rem(4));
   box-shadow: 0 rem(4) 0 0 var(--button-hover, var(--mantine-primary-color-7));
+  &[data-disabled] {
+    transform: none;
+    box-shadow: 0 rem(8) 0 0 var(--button-hover, var(--mantine-primary-color-7));
+  }
 }
 
 .retroPrimaryRoot:hover,

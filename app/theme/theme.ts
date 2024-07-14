@@ -14,36 +14,6 @@ import buttonStyles from './button.module.css'
 import kbdStyles from './kbd.module.css'
 import sliderStyles from './slider.module.css'
 
-// const variantColorResolver: VariantColorsResolver = (input) => {
-//   const defaultResolvedColors = defaultVariantColorsResolver(input)
-//   const parsedColor = parseThemeColor({
-//     color: input.color || input.theme.primaryColor,
-//     theme: input.theme
-//   })
-
-//   // Override some properties for button variant
-//   if (input.variant === 'outline' && parsedColor.color === 'black') {
-//     return {
-//       ...defaultResolvedColors,
-//       hover: 'var(--mantine-color-text)',
-//       hoverColor: 'var(--mantine-color-body)'
-//     }
-//   }
-
-//   // Completely override variant
-//   if (input.variant === 'outline' && parsedColor.color === 'white') {
-//     return {
-//       background: 'transparent',
-//       border: `${rem(1)} solid var(--mantine-color-body)`,
-//       color: 'var(--mantine-color-body)',
-//       hover: 'var(--mantine-color-body)',
-//       hoverColor: 'var(--mantine-color-text)'
-//     }
-//   }
-
-//   return defaultResolvedColors
-// }
-
 const theme = createTheme({
   fontFamily:
     '"Montserrat", -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji',
@@ -95,7 +65,6 @@ const theme = createTheme({
     },
     headerHeight: rem(75)
   },
-  // variantColorResolver,
   components: {
     Button: Button.extend({
       vars: (_theme, props) => {
@@ -104,6 +73,20 @@ const theme = createTheme({
             root: {
               '--button-bg': `var(--mantine-color-${props.color}-3)`,
               '--button-hover': `var(--mantine-color-${props.color}-7)`
+            }
+          }
+
+          // if (props.color === 'gray') {
+          //   colors.root['--button-hover'] = `var(--mantine-color-${props.color}-6)`
+          //   return colors
+          // }
+        }
+
+        if (props.disabled) {
+          return {
+            root: {
+              '--button-bg': `var(--mantine-color-gray-3)`,
+              '--button-hover': `var(--mantine-color-gray-6)`
             }
           }
         }

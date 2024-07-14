@@ -19,7 +19,8 @@ const useBoundStore = create<VisualizerSlice & OptionsSlice>()(
     immer((...a) => ({
       ...createVisualizerSlice(...a),
       ...createOptionsSlice(...a)
-    }))
+    })),
+    { enabled: true }
   )
 )
 
