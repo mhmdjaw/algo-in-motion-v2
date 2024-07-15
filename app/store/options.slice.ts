@@ -11,19 +11,17 @@ const initialOptionsState = {
   cities: 8
 }
 
-export interface OptionsSlice {
+interface Options {
   speed: number
   size: number
   nodes: number
   edges: number
   points: number
   cities: number
-  changeSpeed: (speed: number) => void
-  changeSize: (size: number) => void
-  changeNodes: (nodes: number) => void
-  changeEdges: (edges: number) => void
-  changePoints: (points: number) => void
-  changeCities: (cities: number) => void
+}
+
+export interface OptionsSlice extends Options {
+  changeOption: (optionName: keyof Options) => (newValue: number) => void
 }
 
 export const createOptionsSlice: StateCreator<
@@ -35,11 +33,9 @@ export const createOptionsSlice: StateCreator<
   sliceResetFns.add(() => set(initialOptionsState))
   return {
     ...initialOptionsState,
-    changeSpeed: (speed: number) => set({ speed }),
-    changeSize: (size: number) => set({ size }),
-    changeNodes: (nodes: number) => set({ nodes }),
-    changeEdges: (edges: number) => set({ edges }),
-    changePoints: (points: number) => set({ points }),
-    changeCities: (cities: number) => set({ cities })
+    changeOption: (optionName: keyof Options) => (newValue: number) => {
+      const value = newValue
+      set({ [optionName]: value })
+    }
   }
 }
