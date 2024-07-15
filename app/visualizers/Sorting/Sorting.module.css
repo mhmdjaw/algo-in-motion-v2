@@ -1,0 +1,12 @@
+.container {
+  display: flex;
+  height: 80vh;
+  width: 95vw;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin: 0 auto;
+}
+
+.bar {
+  background-color: var(--mantine-color-blue-6);
+}

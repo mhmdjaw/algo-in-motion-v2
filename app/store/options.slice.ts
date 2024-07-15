@@ -21,7 +21,7 @@ interface Options {
 }
 
 export interface OptionsSlice extends Options {
-  changeOption: (optionName: keyof Options) => (newValue: number) => void
+  changeOption: (optionName: keyof Options, cb?: () => void) => (newValue: number) => void
 }
 
 export const createOptionsSlice: StateCreator<
@@ -33,9 +33,9 @@ export const createOptionsSlice: StateCreator<
   sliceResetFns.add(() => set(initialOptionsState))
   return {
     ...initialOptionsState,
-    changeOption: (optionName: keyof Options) => (newValue: number) => {
-      const value = newValue
-      set({ [optionName]: value })
+    changeOption: (optionName: keyof Options, cb) => (newValue: number) => {
+      set({ [optionName]: newValue })
+      if (cb) cb()
     }
   }
 }

@@ -14,7 +14,7 @@ export interface VisualizerSlice {
   isPaused: boolean
   isGenerating: boolean
   isComplete: boolean
-  isReset: () => void
+  isReset: () => boolean
   runVisualizer: () => void
   pauseVisualizer: () => void
   resetVisualizer: () => void
