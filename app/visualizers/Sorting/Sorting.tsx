@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 import { Algorithm } from '~/static'
 import { quickSort, type ArrayNumber, type QuickSortAnimation } from '~/algorithms'
@@ -7,6 +7,7 @@ import { useMantineTheme } from '@mantine/core'
 import { useBoundStore } from '~/store'
 import styles from './Sorting.module.css'
 import { useAnimationFrame } from '@mhmdjawhar/react-hooks'
+import { drawQuickSorAnimation } from './Sorting.drawer'
 
 export function Sorting({ algorithm }: { algorithm: Algorithm }) {
   const size = useBoundStore((state) => state.size)
@@ -17,19 +18,22 @@ export function Sorting({ algorithm }: { algorithm: Algorithm }) {
   const visualizationComplete = useBoundStore((state) => state.visualizationComplete)
 
   const [array, setArray] = useState<ArrayNumber[]>([])
-  const barRef = useRef<(HTMLDivElement | null)[]>([])
+  const barsRef = useRef<(HTMLDivElement | null)[]>([])
   const animations = useRef<QuickSortAnimation[]>([])
   const animationIndex = useRef<number>(0)
   const previousTimeStamp = useRef(Date.now())
 
   const theme = useMantineTheme()
-  const [PINK, BLUE, YELLOW, GREEN, RED] = [
-    theme.colors.pink[7],
-    theme.colors.blue[6],
-    'yellow',
-    'lime',
-    'red'
-  ]
+  const colors = useMemo(
+    () => ({
+      PINK: theme.colors.pink[7],
+      BLUE: theme.colors.blue[6],
+      YELLOW: 'yellow',
+      GREEN: 'lime',
+      RED: 'red'
+    }),
+    [theme.colors.blue, theme.colors.pink]
+  )
 
   // FPS interval (converted to ms)
   const animationSpeed = (1 - speed / 100) * (16 + (310 - size)) + 5
@@ -51,7 +55,7 @@ export function Sorting({ algorithm }: { algorithm: Algorithm }) {
       })
     }
 
-    barRef.current = new Array(newArray.length)
+    barsRef.current = new Array(newArray.length)
     setArray(newArray)
   }, [size])
 
@@ -73,116 +77,7 @@ export function Sorting({ algorithm }: { algorithm: Algorithm }) {
 
         const animation = animations.current[index]
 
-        switch (animation.action) {
-          case 'PIVOT': {
-            const pivot = animation.index[0]
-            const i = animation.index[1]
-            const j = animation.index[2]
-            const pivotBar = barRef.current[pivot]?.style
-            const iBar = barRef.current[i]?.style
-            const jBar = barRef.current[j]?.style
-
-            if (pivotBar) pivotBar.background = YELLOW
-            if (iBar) iBar.background = GREEN
-            if (jBar) jBar.background = GREEN
-
-            break
-          }
-
-          case 'ITERATE_LOW': {
-            const i = animation.index[0]
-            const iBar = barRef.current[i]?.style
-            const nextBar = barRef.current[i + 1]?.style
-
-            if (iBar) iBar.background = BLUE
-            if (nextBar) nextBar.background = GREEN
-
-            break
-          }
-
-          case 'ITERATE_HIGH': {
-            const j = animation.index[0]
-            const jBar = barRef.current[j]?.style
-            const nextBar = barRef.current[j - 1]?.style
-
-            if (jBar) jBar.background = BLUE
-            if (nextBar) nextBar.background = GREEN
-
-            break
-          }
-
-          case 'SWAP_COLOR': {
-            const i = animation.index[0]
-            const j = animation.index[1]
-            const iBar = barRef.current[i]?.style
-            const jBar = barRef.current[j]?.style
-
-            if (iBar) iBar.background = RED
-            if (jBar) jBar.background = RED
-
-            break
-          }
-
-          case 'SWAP_VALUES': {
-            const i = animation.index[0]
-            const iHeight = animation.index[1]
-            const j = animation.index[2]
-            const jHeight = animation.index[3]
-            const iBar = barRef.current[i]?.style
-            const jBar = barRef.current[j]?.style
-
-            if (iBar) iBar.height = `${iHeight}%`
-            if (jBar) jBar.height = `${jHeight}%`
-
-            break
-          }
-
-          case 'SWAP_DONE': {
-            const i = animation.index[0]
-            const j = animation.index[1]
-            const iBar = barRef.current[i]?.style
-            const jBar = barRef.current[j]?.style
-            const nextiBar = barRef.current[i + 1]?.style
-            const nextjBar = barRef.current[j - 1]?.style
-
-            if (iBar) iBar.background = BLUE
-            if (jBar) jBar.background = BLUE
-            if (nextiBar) nextiBar.background = GREEN
-            if (nextjBar) nextjBar.background = GREEN
-
-            break
-          }
-
-          case 'SWAP_PIVOT': {
-            const pivot = animation.index[0]
-            const j = animation.index[1]
-            const i = animation.index[2]
-            const pivotBar = barRef.current[pivot]?.style
-            const jBar = barRef.current[j]?.style
-            const iBar = barRef.current[i]?.style
-
-            if (pivotBar) pivotBar.background = RED
-            if (jBar) jBar.background = RED
-            if (iBar) iBar.background = BLUE
-
-            break
-          }
-
-          case 'SWAP_PIVOT_DONE': {
-            const pivot = animation.index[0]
-            const j = animation.index[1]
-            const pivotBar = barRef.current[pivot]?.style
-            const jBar = barRef.current[j]?.style
-
-            if (pivotBar) pivotBar.background = BLUE
-            if (jBar) jBar.background = BLUE
-
-            break
-          }
-
-          default:
-            break
-        }
+        drawQuickSorAnimation(animation, barsRef.current, colors)
 
         ++animationIndex.current
 
@@ -192,7 +87,7 @@ export function Sorting({ algorithm }: { algorithm: Algorithm }) {
       }
     },
     false,
-    [array, animationSpeed, YELLOW, GREEN, BLUE, RED, visualizationComplete]
+    [array, animationSpeed, visualizationComplete]
   )
 
   // const mergeSortRun = useCallback(() => {
@@ -261,7 +156,7 @@ export function Sorting({ algorithm }: { algorithm: Algorithm }) {
     <div className={styles.container}>
       {array.map((nb, i) => (
         <div
-          ref={(el) => (barRef.current[i] = el)}
+          ref={(el) => (barsRef.current[i] = el)}
           className={styles.bar}
           key={nb.id}
           style={{ height: `${nb.value}%`, width: `${width}%` }}
