@@ -2,7 +2,7 @@ import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react
 import { v4 as uuidv4 } from 'uuid'
 import { Algorithm } from '~/static'
 import { quickSort, type ArrayNumber, type QuickSortAnimation } from '~/algorithms'
-import { clonedArray, randomNumberInterval } from '~/helpers'
+import { cloneArray, randomNumberInterval } from '~/helpers'
 import { useMantineTheme } from '@mantine/core'
 import { useBoundStore } from '~/store'
 import styles from './Sorting.module.css'
@@ -242,7 +242,7 @@ export function Sorting({ algorithm }: { algorithm: Algorithm }) {
       previousTimeStamp.current = Date.now()
       if (algorithm === Algorithm.QuickSort) {
         if (animationIndex.current === 0) {
-          animations.current = quickSort(clonedArray(array))
+          animations.current = quickSort(cloneArray(array))
         }
         quickSortRun()
       } else if (algorithm === Algorithm.MergeSort) {

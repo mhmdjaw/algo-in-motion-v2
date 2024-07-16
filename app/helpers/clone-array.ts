@@ -1,4 +1,4 @@
-export const clonedArray = <T>(a: T[]) =>
+export const cloneArray = <T>(a: T[]) =>
   a.map((a) => {
     return { ...a }
   })
