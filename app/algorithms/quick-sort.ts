@@ -3,7 +3,7 @@ export interface ArrayNumber {
   value: number
 }
 
-interface Animation {
+export interface QuickSortAnimation {
   action:
     | 'PIVOT'
     | 'SWAP_COLOR'
@@ -16,8 +16,8 @@ interface Animation {
   index: number[]
 }
 
-export const quickSort = (array: ArrayNumber[]): Animation[] => {
-  const animations: Animation[] = []
+export const quickSort = (array: ArrayNumber[]): QuickSortAnimation[] => {
+  const animations: QuickSortAnimation[] = []
   quickSortHelper(array, 0, array.length - 1, animations)
   return animations
 }
@@ -26,7 +26,7 @@ const quickSortHelper = (
   array: ArrayNumber[],
   low: number,
   high: number,
-  animations: Animation[]
+  animations: QuickSortAnimation[]
 ): void => {
   if (low < high) {
     const p = partition(array, low, high, animations)
@@ -41,7 +41,7 @@ const partition = (
   array: ArrayNumber[],
   low: number,
   high: number,
-  animations: Animation[]
+  animations: QuickSortAnimation[]
 ): number => {
   // pivot is array[low]
   let i = low + 1

@@ -82,6 +82,7 @@ function Actions({ isMobile }: { isMobile?: boolean }) {
         leftSection={!isMobile ? <FaUndoAlt /> : undefined}
         rightSection={!isMobile ? <Kbd>R</Kbd> : undefined}
         onClick={resetVisualizer}
+        disabled={isReset}
       >
         {isMobile ? <FaUndoAlt /> : 'Reset'}
       </Button>
