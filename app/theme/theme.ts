@@ -8,11 +8,13 @@ import {
   Button,
   Alert,
   Kbd,
-  Slider
+  Slider,
+  Menu
 } from '@mantine/core'
 import buttonStyles from './button.module.css'
 import kbdStyles from './kbd.module.css'
 import sliderStyles from './slider.module.css'
+import menuStyles from './menu.module.css'
 
 const theme = createTheme({
   fontFamily:
@@ -63,7 +65,8 @@ const theme = createTheme({
       semiBold: '600',
       bold: '700'
     },
-    headerHeight: rem(75)
+    headerHeight: rem(75),
+    borderColor: 'var(--mantine-color-dark-4)'
   },
   components: {
     Button: Button.extend({
@@ -119,6 +122,11 @@ const theme = createTheme({
         label: sliderStyles.label
       }
     }),
+    Menu: Menu.extend({
+      classNames: {
+        dropdown: menuStyles.menuDropdown
+      }
+    }),
     Alert: Alert.extend({
       styles: {
         title: {
@@ -136,7 +144,8 @@ export const resolver: CSSVariablesResolver = (theme) => ({
     '--mantine-fw-md': theme.other.fontWeights.medium,
     '--mantine-fw-sb': theme.other.fontWeights.semiBold,
     '--mantine-fw-b': theme.other.fontWeights.bold,
-    '--mantine-header-height': theme.other.headerHeight
+    '--mantine-header-height': theme.other.headerHeight,
+    '--mantine-border-color': theme.other.borderColor
   },
   light: {},
   dark: {}

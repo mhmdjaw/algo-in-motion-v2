@@ -1,10 +1,12 @@
-import { Button, Group, Kbd, px, Space, useMantineTheme } from '@mantine/core'
+import { Button, Group, Kbd, Menu, px, Space, useMantineTheme } from '@mantine/core'
 import styles from './Header.module.css'
 import { Logo } from '~/assets/svg'
 import { FaCaretDown, FaPlay, FaUndoAlt, FaPause } from 'react-icons/fa'
 import { useMediaQuery, useWindowEvent } from '@mhmdjawhar/react-hooks'
 import { useBoundStore } from '~/store'
 import { useCallback } from 'react'
+import { Link, useLocation } from '@remix-run/react'
+import { ALGORITHM_HANDLE, ALGORITHM_NAME, AlgorithmKey, getAlgorithmKeyByHandle } from '~/static'
 
 export function Header() {
   const theme = useMantineTheme()
@@ -22,32 +24,48 @@ export function Header() {
 }
 
 function AlgorithmsMenu({ isMobile }: { isMobile?: boolean }) {
+  const location = useLocation()
+  const algorithm = location.pathname.split('/')[2]
+  const algorithmKey = getAlgorithmKeyByHandle(algorithm)
+
   return (
-    <Button
-      variant="retro-secondary"
-      size="sm"
-      color="blue"
-      leftSection={!isMobile ? <Logo width={px('1.2rem')} height={px('1.2rem')} /> : undefined}
-      rightSection={<FaCaretDown fontSize={px('1.2rem')} />}
-    >
-      Traveling Salesman
-    </Button>
+    <Menu offset={30} position="bottom-start">
+      <Menu.Target>
+        <Button
+          variant="retro-secondary"
+          size="sm"
+          color="blue"
+          leftSection={!isMobile ? <Logo width={px('1.2rem')} height={px('1.2rem')} /> : undefined}
+          rightSection={<FaCaretDown fontSize={px('1.2rem')} />}
+        >
+          {ALGORITHM_NAME[algorithmKey]}
+        </Button>
+      </Menu.Target>
+      <Menu.Dropdown>
+        {Object.values(AlgorithmKey).map((key) => (
+          <Menu.Item component={Link} to={`/algorithms/${ALGORITHM_HANDLE[key]}`} key={key}>
+            {ALGORITHM_NAME[key]}
+          </Menu.Item>
+        ))}
+      </Menu.Dropdown>
+    </Menu>
   )
 }
 
 function Actions({ isMobile }: { isMobile?: boolean }) {
-  const isComplete = useBoundStore((state) => state.isComplete)
-  const isRunning = useBoundStore((state) => state.isRunning)
-  const isGenerating = useBoundStore((state) => state.isGenerating)
-  const isReset = useBoundStore((state) => state.isReset())
+  const isComplete = useBoundStore((s) => s.isComplete)
+  const isRunning = useBoundStore((s) => s.isRunning)
+  const isGenerating = useBoundStore((s) => s.isGenerating)
+  const isReset = useBoundStore((s) => s.isReset())
 
-  const resetVisualizer = useBoundStore((state) => state.resetVisualizer)
-  const runVisualizer = useBoundStore((state) => state.runVisualizer)
-  const pauseVisualizer = useBoundStore((state) => state.pauseVisualizer)
-  const generateVisualizer = useBoundStore((state) => state.generateVisualizer)
+  const resetVisualizer = useBoundStore((s) => s.resetVisualizer)
+  const runVisualizer = useBoundStore((s) => s.runVisualizer)
+  const pauseVisualizer = useBoundStore((s) => s.pauseVisualizer)
+  const generateVisualizer = useBoundStore((s) => s.generateVisualizer)
 
   const isPlaying = isRunning || isGenerating
   const ActionIcon = isPlaying ? FaPause : FaPlay
+  const actionText = isPlaying ? 'Pause' : 'Play'
 
   const handleAction = useCallback(() => {
     if (isPlaying || isGenerating) {
@@ -92,8 +110,9 @@ function Actions({ isMobile }: { isMobile?: boolean }) {
         rightSection={!isMobile ? <Kbd>Enter</Kbd> : undefined}
         disabled={isComplete}
         onClick={handleAction}
+        classNames={{ label: styles.playButtonLabel }}
       >
-        {isMobile ? <ActionIcon /> : 'Play'}
+        {isMobile ? <ActionIcon /> : actionText}
       </Button>
     </Group>
   )

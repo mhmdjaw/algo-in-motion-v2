@@ -1,25 +1,35 @@
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { v4 as uuidv4 } from 'uuid'
-import { Algorithm } from '~/static'
-import { quickSort, type ArrayNumber, type QuickSortAnimation } from '~/algorithms'
+import {
+  mergeSort,
+  quickSort,
+  type MergeSortAnimation,
+  type QuickSortAnimation
+} from '~/algorithms'
 import { cloneArray, randomNumberInterval } from '~/helpers'
 import { useMantineTheme } from '@mantine/core'
 import { useBoundStore } from '~/store'
 import styles from './Sorting.module.css'
 import { useAnimationFrame } from '@mhmdjawhar/react-hooks'
-import { drawQuickSorAnimation } from './Sorting.drawer'
+import { drawMergeSortAnimation, drawQuickSortAnimation } from './Sorting.drawer'
+import { ALGORITHM_HANDLE } from '~/static'
 
-export function Sorting({ algorithm }: { algorithm: Algorithm }) {
-  const size = useBoundStore((state) => state.size)
-  const speed = useBoundStore((state) => state.speed)
-  const isRunning = useBoundStore((state) => state.isRunning)
-  const isPaused = useBoundStore((state) => state.isPaused)
-  const isReset = useBoundStore((state) => state.isReset())
-  const visualizationComplete = useBoundStore((state) => state.visualizationComplete)
+export interface ArrayNumber {
+  id: string
+  value: number
+}
+
+export function Sorting({ algorithm }: { algorithm: string }) {
+  const size = useBoundStore((s) => s.size)
+  const speed = useBoundStore((s) => s.speed)
+  const isRunning = useBoundStore((s) => s.isRunning)
+  const isPaused = useBoundStore((s) => s.isPaused)
+  const isReset = useBoundStore((s) => s.isReset())
+  const visualizationComplete = useBoundStore((s) => s.visualizationComplete)
 
   const [array, setArray] = useState<ArrayNumber[]>([])
   const barsRef = useRef<(HTMLDivElement | null)[]>([])
-  const animations = useRef<QuickSortAnimation[]>([])
+  const animations = useRef<QuickSortAnimation[] | MergeSortAnimation[]>([])
   const animationIndex = useRef<number>(0)
   const previousTimeStamp = useRef(Date.now())
 
@@ -75,9 +85,40 @@ export function Sorting({ algorithm }: { algorithm: Algorithm }) {
 
         // draw stuff here
 
-        const animation = animations.current[index]
+        const animation = animations.current[index] as QuickSortAnimation
 
-        drawQuickSorAnimation(animation, barsRef.current, colors)
+        drawQuickSortAnimation(animation, barsRef.current, colors)
+
+        ++animationIndex.current
+
+        if (animationIndex.current >= animations.current.length) {
+          complete(visualizationComplete)
+        }
+      }
+    },
+    false,
+    [array, animationSpeed, visualizationComplete, colors]
+  )
+
+  const [mergeSortRun, mergeSortCancel] = useAnimationFrame(
+    ({ complete }) => {
+      const index = animationIndex.current
+
+      const now = Date.now()
+      const elapsed = now - previousTimeStamp.current
+
+      // if enough time has elapsed, draw the next frame
+
+      if (elapsed > animationSpeed) {
+        // Get ready for next frame by setting then=now, but...
+        // Also, adjust for fpsInterval not being multiple of 16.67
+        previousTimeStamp.current = now - (elapsed % animationSpeed)
+
+        // draw stuff here
+
+        const animation = animations.current[index] as MergeSortAnimation
+
+        drawMergeSortAnimation(animation, barsRef.current, colors)
 
         ++animationIndex.current
 
@@ -90,78 +131,53 @@ export function Sorting({ algorithm }: { algorithm: Algorithm }) {
     [array, animationSpeed, visualizationComplete]
   )
 
-  // const mergeSortRun = useCallback(() => {
-  //   const animations = mergeSort(array)
-  //   timeouts.current = new Array(animations.length + 1)
-
-  //   animations.forEach((animation, index) => {
-  //     switch (animation.action) {
-  //       case 'SAVE_VALUE': {
-  //         const i = animation.index[0]
-  //         const iBar = barRef.current[i]?.style
-
-  //         timeouts.current[index] = setTimeout(() => {
-  //           if (iBar) iBar.background = PRIMARY_COLOR
-  //         }, index * animationSpeed)
-
-  //         break
-  //       }
-
-  //       case 'UPDATE_PARTITION': {
-  //         const i = animation.index[0]
-  //         const iHeight = animation.index[1]
-  //         const iBar = barRef.current[i]?.style
-
-  //         timeouts.current[index] = setTimeout(() => {
-  //           if (iBar) {
-  //             iBar.background = SECONDARY_COLOR
-  //             iBar.height = `${iHeight}%`
-  //           }
-  //         }, index * animationSpeed)
-
-  //         break
-  //       }
-
-  //       default:
-  //         break
-  //     }
-  //   })
-
-  //   timeouts.current[animations.length + 1] = setTimeout(() => {
-  //     dispatch(visualizationComplete())
-  //   }, animations.length * animationSpeed)
-  // }, [array, animationSpeed, PRIMARY_COLOR, SECONDARY_COLOR, dispatch])
-
   useEffect(() => {
     if (isRunning) {
-      previousTimeStamp.current = Date.now()
-      if (algorithm === Algorithm.QuickSort) {
+      if (algorithm === ALGORITHM_HANDLE.QUICK_SORT) {
         if (animationIndex.current === 0) {
           animations.current = quickSort(cloneArray(array))
         }
+        previousTimeStamp.current = Date.now()
         quickSortRun()
-      } else if (algorithm === Algorithm.MergeSort) {
-        // mergeSortRun()
+      } else if (algorithm === ALGORITHM_HANDLE.MERGE_SORT) {
+        if (animationIndex.current === 0) {
+          animations.current = mergeSort(cloneArray(array))
+        }
+        previousTimeStamp.current = Date.now()
+        mergeSortRun()
       }
     } else if (isPaused) {
       quickSortCancel()
+      mergeSortCancel()
     }
-  }, [isRunning, quickSortRun, algorithm, array, isPaused, quickSortCancel])
+  }, [
+    isRunning,
+    algorithm,
+    array,
+    isPaused,
+    quickSortRun,
+    quickSortCancel,
+    mergeSortRun,
+    mergeSortCancel
+  ])
 
   useLayoutEffect(() => {
     if (isReset) resetArray()
   }, [isReset, resetArray])
 
   return (
-    <div className={styles.container}>
-      {array.map((nb, i) => (
-        <div
-          ref={(el) => (barsRef.current[i] = el)}
-          className={styles.bar}
-          key={nb.id}
-          style={{ height: `${nb.value}%`, width: `${width}%` }}
-        ></div>
-      ))}
-    </div>
+    <>
+      <div className={styles.container}>
+        {array.map((nb, i) => (
+          <div
+            ref={(el) => (barsRef.current[i] = el)}
+            className={styles.bar}
+            key={nb.id}
+            style={{ height: `${nb.value}%`, width: `${width}%` }}
+          ></div>
+        ))}
+      </div>
+      <div style={{ height: '50vh' }}></div>
+    </>
   )
 }

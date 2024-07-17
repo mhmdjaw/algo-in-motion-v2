@@ -17,7 +17,7 @@
   max-width: 50%;
   padding: rem(16);
   background-color: var(--mantine-color-dark-8);
-  border: var(--mantine-border-width) solid var(--mantine-color-dark-5);
+  border: var(--mantine-border-width) solid var(--mantine-border-color);
   border-radius: var(--mantine-radius-sm);
   @mixin smaller-than $mantine-breakpoint-sm {
     padding: rem(8);

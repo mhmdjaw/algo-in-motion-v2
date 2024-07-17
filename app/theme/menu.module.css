@@ -1,0 +1,5 @@
+.menuDropdown {
+  background: alpha(var(--mantine-color-dark-8), 0.7);
+  backdrop-filter: blur(rem(5)) saturate(1.8);
+  border: var(--mantine-border-width) solid var(--mantine-border-color);
+}

@@ -1,20 +1,28 @@
 .header {
   align-items: center;
-  background: var(--mantine-color-dark-8);
+  background: alpha(var(--mantine-color-dark-8), 0.7);
+  backdrop-filter: blur(rem(5)) saturate(1.8);
   display: flex;
   justify-content: space-between;
   height: var(--mantine-header-height);
-  border-bottom: var(--mantine-border-width) solid var(--mantine-color-dark-5);
+  border-bottom: var(--mantine-border-width) solid var(--mantine-border-color);
   padding: 0 5rem;
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
-  z-index: 9999;
+  z-index: 99;
   @mixin smaller-than $mantine-breakpoint-md {
     padding: 0 3rem;
   }
   @mixin smaller-than $mantine-breakpoint-sm {
     padding: 0 1.5rem;
+  }
+}
+
+.playButtonLabel {
+  @mixin larger-than $mantine-breakpoint-sm {
+    width: rem(44);
+    justify-content: center;
   }
 }

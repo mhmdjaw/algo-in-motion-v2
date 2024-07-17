@@ -1,7 +1,4 @@
-export interface ArrayNumber {
-  id: string
-  value: number
-}
+import type { ArrayNumber } from '~/visualizers'
 
 export interface QuickSortAnimation {
   action:

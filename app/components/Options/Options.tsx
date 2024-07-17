@@ -1,14 +1,15 @@
 import { Slider, Stack, Text } from '@mantine/core'
 import styles from './Options.module.css'
 import { useLocation } from '@remix-run/react'
-import { useBoundStore } from '~/store'
-import { Algorithm } from '~/static'
+import { resetAllSlices, useBoundStore } from '~/store'
+import { useEffect } from 'react'
+import { ALGORITHM_HANDLE } from '~/static'
 
-const sizeAlgorithms = [Algorithm.QuickSort, Algorithm.MergeSort]
-const nodesAlgorithms = [Algorithm.BFS, Algorithm.DFS]
-const edgesAlgorithms = [Algorithm.BFS, Algorithm.DFS]
-const pointsAlgorithms = [Algorithm.TimesTable]
-const citiesAlgorithms = [Algorithm.TravelingSalesman]
+const sizeAlgorithms = [ALGORITHM_HANDLE.QUICK_SORT, ALGORITHM_HANDLE.MERGE_SORT]
+const nodesAlgorithms = [ALGORITHM_HANDLE.BFS, ALGORITHM_HANDLE.DFS]
+const edgesAlgorithms = [ALGORITHM_HANDLE.BFS, ALGORITHM_HANDLE.DFS]
+const pointsAlgorithms = [ALGORITHM_HANDLE.TIMES_TABLE]
+const citiesAlgorithms = [ALGORITHM_HANDLE.PATHFINDING]
 
 export function Options() {
   const location = useLocation()
@@ -24,13 +25,17 @@ export function Options() {
   const pointsAvailable = checkOption(pointsAlgorithms)
   const citiesAvailable = checkOption(citiesAlgorithms)
 
-  const changeOption = useBoundStore((state) => state.changeOption)
-  const resetVisualizer = useBoundStore((state) => state.resetVisualizer)
-  const isRunning = useBoundStore((state) => state.isRunning)
-  const isGenerating = useBoundStore((state) => state.isGenerating)
+  const changeOption = useBoundStore((s) => s.changeOption)
+  const resetVisualizer = useBoundStore((s) => s.resetVisualizer)
+  const isRunning = useBoundStore((s) => s.isRunning)
+  const isGenerating = useBoundStore((s) => s.isGenerating)
 
-  const speed = useBoundStore((state) => state.speed)
-  const size = useBoundStore((state) => state.size)
+  const speed = useBoundStore((s) => s.speed)
+  const size = useBoundStore((s) => s.size)
+
+  useEffect(() => {
+    resetAllSlices()
+  }, [location])
 
   return (
     <div className={styles.container}>

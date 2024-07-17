@@ -1,4 +1,4 @@
-import type { QuickSortAnimation } from '~/algorithms'
+import type { MergeSortAnimation, QuickSortAnimation } from '~/algorithms'
 
 interface Colors {
   PINK: string
@@ -8,7 +8,7 @@ interface Colors {
   RED: string
 }
 
-export const drawQuickSorAnimation = (
+export const drawQuickSortAnimation = (
   animation: QuickSortAnimation,
   bars: (HTMLDivElement | null)[],
   colors: Colors
@@ -118,6 +118,41 @@ export const drawQuickSorAnimation = (
 
       if (pivotBar) pivotBar.background = BLUE
       if (jBar) jBar.background = BLUE
+
+      break
+    }
+
+    default:
+      break
+  }
+}
+
+export const drawMergeSortAnimation = (
+  animation: MergeSortAnimation,
+  bars: (HTMLDivElement | null)[],
+  colors: Colors
+) => {
+  const { PINK, BLUE } = colors
+
+  switch (animation.action) {
+    case 'SAVE_VALUE': {
+      const i = animation.index[0]
+      const iBar = bars[i]?.style
+
+      if (iBar) iBar.background = PINK
+
+      break
+    }
+
+    case 'UPDATE_PARTITION': {
+      const i = animation.index[0]
+      const iHeight = animation.index[1]
+      const iBar = bars[i]?.style
+
+      if (iBar) {
+        iBar.background = BLUE
+        iBar.height = `${iHeight}%`
+      }
 
       break
     }
