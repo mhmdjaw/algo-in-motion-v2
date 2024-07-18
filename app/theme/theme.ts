@@ -72,17 +72,21 @@ const theme = createTheme({
     Button: Button.extend({
       vars: (_theme, props) => {
         if (props.color) {
+          if (props.color === 'gray') {
+            return {
+              root: {
+                '--button-bg': `var(--mantine-color-${props.color}-3)`,
+                '--button-hover': `var(--mantine-color-${props.color}-6)`
+              }
+            }
+          }
+
           return {
             root: {
               '--button-bg': `var(--mantine-color-${props.color}-3)`,
               '--button-hover': `var(--mantine-color-${props.color}-7)`
             }
           }
-
-          // if (props.color === 'gray') {
-          //   colors.root['--button-hover'] = `var(--mantine-color-${props.color}-6)`
-          //   return colors
-          // }
         }
 
         if (props.disabled) {

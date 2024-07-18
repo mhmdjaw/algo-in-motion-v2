@@ -1,0 +1,48 @@
+.root {
+  --footer-height: rem(374);
+  @mixin smaller-than $mantine-breakpoint-sm {
+    --footer-height: rem(529);
+  }
+}
+
+.footerContainer {
+  background-color: var(--mantine-color-dark-8);
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+.container {
+  padding: rem(100) rem(32);
+}
+
+.content {
+  gap: rem(64);
+  @mixin smaller-than $mantine-breakpoint-sm {
+    gap: rem(32);
+  }
+}
+
+.header {
+  @mixin smaller-than $mantine-breakpoint-sm {
+    flex-direction: column;
+    justify-content: center;
+  }
+}
+
+.bottomSection {
+  justify-content: space-between;
+  @mixin smaller-than $mantine-breakpoint-sm {
+    justify-content: center;
+    flex-direction: column;
+    gap: rem(24);
+  }
+}
+
+.buttons {
+  @mixin smaller-than $mantine-breakpoint-sm {
+    flex-direction: column;
+    gap: rem(24);
+  }
+}

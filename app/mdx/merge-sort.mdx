@@ -1,0 +1,36 @@
+import { Content } from '~/components'
+import { ColorSwatch, Group, Text, Stack } from '@mantine/core'
+
+<Content title="Legends">
+  <Stack>
+    <Group>
+      <ColorSwatch color="var(--mantine-primary-color-7)" />
+      <Text size="lg" fw={600}>
+        <span>Merging left and right halves</span>
+      </Text>
+    </Group>
+    <Group>
+      <ColorSwatch color="var(--mantine-color-blue-6)" />
+      <Text size="lg" fw={600}>
+        <span>Merged version of the partition</span>
+      </Text>
+    </Group>
+  </Stack>
+</Content>
+
+<Content title="Explanation">
+
+Just like Quick Sort, Merge Sort is a **Divide and Conquer** algorithm, and
+one of its main competitors. The main difference is that unlike Quick Sort,
+Merge Sort is **stable**, which means it has the same time complexity of `O(n*log(n))`
+from its best to its worst case. This is the reason why in the worst case it performs better
+than Quick Sort which has a time complexity of <code>O(n<sup>2</sup>)</code>. Although
+in general, its performance is slightly worse because it makes more comparisons than
+Quick Sort on average.
+
+Merge Sort is based on the idea of dividing the list into two halves recursively until
+there is only one element in each sublist. At this point, each leaf sublist is considered
+to be sorted. After that we begin the process of merging back two sorted sublists at a time
+until the main list is completely sorted.
+
+</Content>
