@@ -1,0 +1,21 @@
+.contentContainer {
+  background-color: var(--mantine-color-dark-8);
+  border: var(--mantine-border-width) solid var(--mantine-border-color);
+  border-radius: var(--mantine-radius-md);
+  line-height: 2;
+  padding: rem(24);
+  padding-bottom: rem(32);
+  margin-bottom: rem(60);
+  @mixin smaller-than $mantine-breakpoint-sm {
+    padding: rem(16);
+    padding-bottom: rem(24);
+  }
+}
+
+.title {
+  margin-bottom: rem(24);
+  font-size: rem(50);
+  @mixin smaller-than $mantine-breakpoint-sm {
+    font-size: var(--mantine-h1-font-size);
+  }
+}

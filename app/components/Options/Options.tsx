@@ -13,7 +13,7 @@ const citiesAlgorithms = [ALGORITHM_HANDLE.PATHFINDING]
 
 export function Options() {
   const location = useLocation()
-  const algorithm = location.pathname.split('/')[2]
+  const algorithm = location.pathname.split('/').at(-1)
 
   const checkOption = (optionAlgorithms: string[]) => {
     return optionAlgorithms.some((algo) => algo === algorithm)

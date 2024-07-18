@@ -1,6 +1,6 @@
 .container {
   display: flex;
-  height: 80vh;
+  height: calc(90vh - (var(--mantine-header-height) + rem(100)));
   width: 95vw;
   align-items: flex-end;
   justify-content: space-between;

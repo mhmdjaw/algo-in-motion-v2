@@ -25,7 +25,7 @@ export function Header() {
 
 function AlgorithmsMenu({ isMobile }: { isMobile?: boolean }) {
   const location = useLocation()
-  const algorithm = location.pathname.split('/')[2]
+  const algorithm = location.pathname.split('/').at(-1) as string
   const algorithmKey = getAlgorithmKeyByHandle(algorithm)
 
   return (

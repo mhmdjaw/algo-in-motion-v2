@@ -166,18 +166,15 @@ export function Sorting({ algorithm }: { algorithm: string }) {
   }, [isReset, resetArray])
 
   return (
-    <>
-      <div className={styles.container}>
-        {array.map((nb, i) => (
-          <div
-            ref={(el) => (barsRef.current[i] = el)}
-            className={styles.bar}
-            key={nb.id}
-            style={{ height: `${nb.value}%`, width: `${width}%` }}
-          ></div>
-        ))}
-      </div>
-      <div style={{ height: '50vh' }}></div>
-    </>
+    <div className={styles.container}>
+      {array.map((nb, i) => (
+        <div
+          ref={(el) => (barsRef.current[i] = el)}
+          className={styles.bar}
+          key={nb.id}
+          style={{ height: `${nb.value}%`, width: `${width}%` }}
+        />
+      ))}
+    </div>
   )
 }

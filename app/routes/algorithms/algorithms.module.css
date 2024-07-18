@@ -1,0 +1,5 @@
+.infoContainer {
+  margin: 30vmin auto;
+  padding: 0 rem(16);
+  font-size: var(--mantine-font-size-lg);
+}

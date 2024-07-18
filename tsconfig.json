@@ -1,5 +1,5 @@
 {
-  "include": ["env.d.ts", "**/*.ts", "**/*.tsx"],
+  "include": ["env.d.ts", "**/*.ts", "**/*.tsx", "**/*.mdx"],
   "compilerOptions": {
     "lib": ["DOM", "DOM.Iterable", "ES2022"],
     "types": ["@remix-run/node", "vite/client"],
@@ -21,5 +21,8 @@
 
     // Remix takes care of building everything in `remix build`.
     "noEmit": true
+  },
+  "mdx": {
+    "checkMdx": true
   }
 }

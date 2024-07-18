@@ -1,0 +1,42 @@
+import { Content } from '~/components'
+import { ColorSwatch, Group, Text, Stack } from '@mantine/core'
+
+<Content title="Legends">
+  <Stack>
+    <Group>
+      <ColorSwatch color="yellow" />
+      <Text size="lg" fw={600}>
+        <span>Current pivot</span>
+      </Text>
+    </Group>
+    <Group>
+      <ColorSwatch color="lime" />
+      <Text size="lg" fw={600}>
+        <span>Iterating on low and high</span>
+      </Text>
+    </Group>
+    <Group>
+      <ColorSwatch color="red" />
+      <Text size="lg" fw={600}>
+        <span>Swapping values</span>
+      </Text>
+    </Group>
+  </Stack>
+</Content>
+
+<Content title="Explanation">
+
+Quick Sort is a **Divide and Conquer** algorithm, which means the problem
+is recursively divided into smaller problems until they are easy to solve.
+The time complexity of quick sort is `O(n*log(n))` in the best and average
+cases, and <code>O(n<sup>2</sup>)</code> in the worst case. However, on average it has the best
+sorting performance which is the reason it's considered the **fastest**
+sorting algorithm.
+
+The algorithm first chooses a random pivot and places all elements with
+values that are smaller than the pivot on the left and elements with
+greater values than the pivot on the right. The process is then
+repeated recursively on the left and right partitions until no
+further partitioning can be made.
+
+</Content>
