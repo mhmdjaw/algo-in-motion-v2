@@ -1,45 +1,40 @@
 import { Container, TypographyStylesProvider } from '@mantine/core'
-import { Outlet, useLocation } from '@remix-run/react'
+import { Outlet, useLoaderData } from '@remix-run/react'
 import { Header, Options } from '~/components'
 import styles from './algorithms.module.css'
-import { Fragment, useCallback, useEffect, useState } from 'react'
+import { Fragment, type PropsWithChildren } from 'react'
+import type { LoaderFunctionArgs } from '@remix-run/node'
 
 const modules = import.meta.glob('../../mdx/*.mdx')
 
+export const clientLoader = ({ request }: LoaderFunctionArgs) => {
+  const algorithm = request.url.split('/').at(-1)
+  return modules[`../../mdx/${algorithm}.mdx`]()
+}
+
 export default function AlgorithmsLayout() {
+  const module = useLoaderData() as { default: React.FC }
+
+  const MDX = module ? module.default : Fragment
+
   return (
     <>
       <Header />
       <main>
         <Options />
         <Outlet />
-        <Info />
+        <Info>
+          <MDX />
+        </Info>
       </main>
     </>
   )
 }
 
-function Info() {
-  const location = useLocation()
-  const algorithm = location.pathname.split('/').at(-1)
-  const [MDX, setMDX] = useState<unknown | null>(null)
-
-  const ContentMDX = MDX ? (MDX as { default: React.FC }).default : Fragment
-
-  const getModule = useCallback(async () => {
-    const fckingmodule = await modules[`../../mdx/${algorithm}.mdx`]().then((mod) => mod)
-    setMDX(fckingmodule)
-  }, [algorithm])
-
-  useEffect(() => {
-    getModule()
-  }, [getModule])
-
+function Info({ children }: PropsWithChildren) {
   return (
     <Container className={styles.infoContainer}>
-      <TypographyStylesProvider>
-        <ContentMDX />
-      </TypographyStylesProvider>
+      <TypographyStylesProvider>{children}</TypographyStylesProvider>
     </Container>
   )
 }
