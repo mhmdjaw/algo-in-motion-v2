@@ -70,7 +70,12 @@ export function Options() {
       {edgesAvailable && (
         <Stack className={styles.optionContainer}>
           <Text className={styles.label}>Edges</Text>
-          <Slider w="100%" value={edges} onChange={changeOption('edges', resetVisualizer)} />
+          <Slider
+            w="100%"
+            value={edges}
+            onChange={changeOption('edges', resetVisualizer)}
+            label={null}
+          />
         </Stack>
       )}
       <Stack className={styles.optionContainer}>
