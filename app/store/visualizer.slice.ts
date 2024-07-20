@@ -31,9 +31,6 @@ export const createVisualizerSlice: StateCreator<
   sliceResetFns.add(() => set(initialVisualizerState))
   return {
     ...initialVisualizerState,
-    // isReset: get()
-    //   ? !(get().isRunning || get().isPaused || get().isGenerating || get().isComplete)
-    //   : true,
     runVisualizer: () => set({ isRunning: true, isPaused: false }),
     pauseVisualizer: () => set({ isRunning: false, isPaused: true }),
     resetVisualizer: () =>
