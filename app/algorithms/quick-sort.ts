@@ -1,4 +1,4 @@
-import type { ArrayNumber } from '~/visualizers'
+import type { ArrayNumber } from './interfaces'
 
 export interface QuickSortAnimation {
   action:

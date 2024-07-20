@@ -32,6 +32,8 @@ export function Options() {
 
   const speed = useBoundStore((s) => s.speed)
   const size = useBoundStore((s) => s.size)
+  const nodes = useBoundStore((s) => s.nodes)
+  const edges = useBoundStore((s) => s.edges)
 
   useEffect(() => {
     resetAllSlices()
@@ -49,6 +51,26 @@ export function Options() {
             value={size}
             onChange={changeOption('size', resetVisualizer)}
           />
+        </Stack>
+      )}
+      {nodesAvailable && (
+        <Stack className={styles.optionContainer}>
+          <Text className={styles.label}>Nodes</Text>
+          <Slider
+            w="100%"
+            value={nodes}
+            onChange={changeOption('nodes', resetVisualizer)}
+            step={1}
+            min={3}
+            max={20}
+            marks={[{ value: 7 }, { value: 12 }, { value: 16 }]}
+          />
+        </Stack>
+      )}
+      {edgesAvailable && (
+        <Stack className={styles.optionContainer}>
+          <Text className={styles.label}>Edges</Text>
+          <Slider w="100%" value={edges} onChange={changeOption('edges', resetVisualizer)} />
         </Stack>
       )}
       <Stack className={styles.optionContainer}>

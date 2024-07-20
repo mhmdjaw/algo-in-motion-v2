@@ -6,18 +6,15 @@ import {
   type MergeSortAnimation,
   type QuickSortAnimation
 } from '~/algorithms'
-import { cloneArray, randomNumberInterval } from '~/helpers'
+import { randomNumberInterval } from '~/helpers'
+import cloneDeep from 'lodash/cloneDeep'
 import { useMantineTheme } from '@mantine/core'
 import { useBoundStore } from '~/store'
 import styles from './Sorting.module.css'
 import { useAnimationFrame } from '@mhmdjawhar/react-hooks'
 import { drawMergeSortAnimation, drawQuickSortAnimation } from './Sorting.drawer'
 import { ALGORITHM_HANDLE } from '~/static'
-
-export interface ArrayNumber {
-  id: string
-  value: number
-}
+import type { ArrayNumber } from '~/algorithms/interfaces'
 
 export function Sorting({ algorithm }: { algorithm: string }) {
   const size = useBoundStore((s) => s.size)
@@ -46,7 +43,7 @@ export function Sorting({ algorithm }: { algorithm: string }) {
   )
 
   // FPS interval (converted to ms)
-  const animationSpeed = (1 - speed / 100) * (16 + (310 - size)) + 5
+  const animationSpeed = useMemo(() => (1 - speed / 100) * (16 + (310 - size)) + 5, [size, speed])
 
   // total widths of all bars combined (so we can adjust the space between them depending on the size)
   const totalBarWidths = 90 - ((90 - 50) / 306) * (size - 4)
@@ -135,13 +132,13 @@ export function Sorting({ algorithm }: { algorithm: string }) {
     if (isRunning) {
       if (algorithm === ALGORITHM_HANDLE.QUICK_SORT) {
         if (animationIndex.current === 0) {
-          animations.current = quickSort(cloneArray(array))
+          animations.current = quickSort(cloneDeep(array))
         }
         previousTimeStamp.current = Date.now()
         quickSortRun()
       } else if (algorithm === ALGORITHM_HANDLE.MERGE_SORT) {
         if (animationIndex.current === 0) {
-          animations.current = mergeSort(cloneArray(array))
+          animations.current = mergeSort(cloneDeep(array))
         }
         previousTimeStamp.current = Date.now()
         mergeSortRun()

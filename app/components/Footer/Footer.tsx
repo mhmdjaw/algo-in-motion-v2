@@ -27,7 +27,7 @@ export function Footer() {
                   leftSection={<VscGithubInverted />}
                   href="https://github.com/mhmdjaw/algo-in-motion-v2"
                 >
-                  Github
+                  GitHub
                 </Button>
                 <Button
                   component="a"

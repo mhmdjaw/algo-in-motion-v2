@@ -1,4 +1,4 @@
-import type { ArrayNumber } from '~/visualizers'
+import type { ArrayNumber } from './interfaces'
 
 export interface MergeSortAnimation {
   action: 'SAVE_VALUE' | 'UPDATE_PARTITION'
