@@ -4,14 +4,14 @@ import type { KonvaEventObject } from 'konva/lib/Node'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Stage, Layer, Circle, Line } from 'react-konva'
 import { v4 as uuidv4 } from 'uuid'
-import { bfs, type BFSAnimation } from '~/algorithms'
+import { bfs, dfs, type BFSAnimation, type DFSAnimation } from '~/algorithms'
 import type { Graph, NodePosition } from '~/algorithms/interfaces'
 import { generateEdges, randomNumberInterval } from '~/helpers'
 import { ALGORITHM_HANDLE } from '~/static'
 import { useBoundStore } from '~/store'
 import styles from './GraphTraversal.module.css'
 import { useAnimationFrame, useDebounce, useViewportSize } from '@mhmdjawhar/react-hooks'
-import { drawBFSAnimation } from './GraphTraversal.drawer'
+import { drawBFSAnimation, drawDFSAnimation } from './GraphTraversal.drawer'
 
 export function GraphTraversal({ algorithm }: { algorithm: string }) {
   const nodes = useBoundStore((s) => s.nodes)
@@ -28,7 +28,7 @@ export function GraphTraversal({ algorithm }: { algorithm: string }) {
   const nodeRef = useRef<(Konva.Circle | null)[]>([])
   const initialNodesPos = useRef<NodePosition[]>([])
   const initialEdgesPos = useRef<number[][]>([])
-  const animations = useRef<BFSAnimation[]>([])
+  const animations = useRef<BFSAnimation[] | DFSAnimation[]>([])
   const animationIndex = useRef<number>(0)
   const previousTimeStamp = useRef(Date.now())
 
@@ -139,69 +139,36 @@ export function GraphTraversal({ algorithm }: { algorithm: string }) {
     [graph, animationSpeed, visualizationComplete, colors]
   )
 
-  // const DFSRun = useCallback(() => {
-  //   // no need to clone since the algorithm doesn't mess with the indexes
-  //   const animations = dfs(graphState.graph)
-  //   timeouts.current = new Array(animations.length + 1)
+  const [DFSRun, DFSCancel] = useAnimationFrame(
+    ({ complete }) => {
+      const index = animationIndex.current
 
-  //   animations.forEach((animation, index) => {
-  //     switch (animation.action) {
-  //       case 'VISIT_NODE': {
-  //         const i = animation.index[0]
+      const now = Date.now()
+      const elapsed = now - previousTimeStamp.current
 
-  //         timeouts.current[index] = setTimeout(() => {
-  //           nodeRef.current[i]?.fill(PRIMARY_COLOR)
-  //           layer.current?.draw()
-  //         }, index * animationSpeed)
+      // if enough time has elapsed, draw the next frame
 
-  //         break
-  //       }
+      if (elapsed > animationSpeed) {
+        // Get ready for next frame by setting then=now, but...
+        // Also, adjust for fpsInterval not being multiple of 16.67
+        previousTimeStamp.current = now - (elapsed % animationSpeed)
 
-  //       case 'VISIT_EDGE': {
-  //         const from = animation.index[0]
-  //         const to = animation.index[1]
-  //         const edge = edgeRef.current[from][to]
+        // draw stuff here
 
-  //         timeouts.current[index] = setTimeout(() => {
-  //           if (edge) edge.stroke(PRIMARY_COLOR)
-  //           layer.current?.draw()
-  //         }, index * animationSpeed)
+        const animation = animations.current[index] as DFSAnimation
 
-  //         break
-  //       }
+        drawDFSAnimation(animation, nodeRef.current, edgeRef.current, colors)
 
-  //       case 'BACKTRACK_EDGE': {
-  //         const from = animation.index[0]
-  //         const to = animation.index[1]
+        ++animationIndex.current
 
-  //         timeouts.current[index] = setTimeout(() => {
-  //           edgeRef.current[from][to]?.stroke(SECONDARY_COLOR)
-  //           layer.current?.draw()
-  //         }, index * animationSpeed)
-
-  //         break
-  //       }
-
-  //       case 'BACKTRACK_NODE': {
-  //         const i = animation.index[0]
-
-  //         timeouts.current[index] = setTimeout(() => {
-  //           nodeRef.current[i]?.fill(SECONDARY_COLOR)
-  //           layer.current?.draw()
-  //         }, index * animationSpeed)
-
-  //         break
-  //       }
-
-  //       default:
-  //         break
-  //     }
-  //   })
-
-  //   timeouts.current[animations.length + 1] = setTimeout(() => {
-  //     dispatch(visualizationComplete())
-  //   }, animations.length * animationSpeed)
-  // }, [graphState.graph, PRIMARY_COLOR, SECONDARY_COLOR, animationSpeed, dispatch])
+        if (animationIndex.current >= animations.current.length) {
+          complete(visualizationComplete)
+        }
+      }
+    },
+    false,
+    [graph, animationSpeed, visualizationComplete, colors]
+  )
 
   useEffect(() => {
     if (isRunning) {
@@ -212,13 +179,17 @@ export function GraphTraversal({ algorithm }: { algorithm: string }) {
         previousTimeStamp.current = Date.now()
         BFSRun()
       } else if (algorithm === ALGORITHM_HANDLE.DFS) {
-        // DFSRun()
+        if (animationIndex.current === 0) {
+          animations.current = dfs(graph.nodes)
+        }
+        previousTimeStamp.current = Date.now()
+        DFSRun()
       }
     } else if (isPaused) {
       BFSCancel()
-      // DFSCancel()
+      DFSCancel()
     }
-  }, [isRunning, BFSRun, algorithm, graph.nodes, BFSCancel, isPaused])
+  }, [isRunning, BFSRun, algorithm, graph.nodes, BFSCancel, isPaused, DFSCancel, DFSRun])
 
   useEffect(() => {
     if (isReset) {
