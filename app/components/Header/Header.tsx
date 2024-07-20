@@ -81,14 +81,16 @@ function Actions({ isMobile }: { isMobile?: boolean }) {
 
   const windowListener = useCallback(
     (event: KeyboardEvent) => {
-      if (event.code === 'KeyR') {
+      event.stopPropagation()
+      event.stopImmediatePropagation()
+      if (!isReset && event.code === 'KeyR') {
         resetVisualizer()
       }
-      if (event.code === 'Enter') {
+      if (!isComplete && event.code === 'KeyP') {
         handleAction()
       }
     },
-    [handleAction, resetVisualizer]
+    [handleAction, isComplete, isReset, resetVisualizer]
   )
 
   useWindowEvent('keydown', windowListener)
@@ -98,7 +100,7 @@ function Actions({ isMobile }: { isMobile?: boolean }) {
       <Button
         variant="retro-secondary"
         leftSection={!isMobile ? <FaUndoAlt /> : undefined}
-        rightSection={!isMobile ? <Kbd>R</Kbd> : undefined}
+        rightSection={!isMobile ? <Kbd>R key</Kbd> : undefined}
         onClick={resetVisualizer}
         disabled={isReset}
       >
@@ -107,7 +109,7 @@ function Actions({ isMobile }: { isMobile?: boolean }) {
       <Button
         variant="retro-secondary"
         leftSection={!isMobile ? <ActionIcon /> : undefined}
-        rightSection={!isMobile ? <Kbd>Enter</Kbd> : undefined}
+        rightSection={!isMobile ? <Kbd>P key</Kbd> : undefined}
         disabled={isComplete}
         onClick={handleAction}
         classNames={{ label: styles.playButtonLabel }}
