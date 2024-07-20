@@ -7,13 +7,18 @@ import { v4 as uuidv4 } from 'uuid'
 import { bfs, dfs, type BFSAnimation, type DFSAnimation } from '~/algorithms'
 import type { Graph, NodePosition } from '~/algorithms/interfaces'
 import { generateEdges, randomNumberInterval } from '~/helpers'
-import { ALGORITHM_HANDLE } from '~/static'
+import { AlgorithmKey } from '~/static'
 import { useBoundStore } from '~/store'
 import styles from './GraphTraversal.module.css'
-import { useAnimationFrame, useDebounce, useViewportSize } from '@mhmdjawhar/react-hooks'
+import {
+  useAnimationFrame,
+  useDebounce,
+  useViewportSize,
+  type CallbackParams
+} from '@mhmdjawhar/react-hooks'
 import { drawBFSAnimation, drawDFSAnimation } from './GraphTraversal.drawer'
 
-export function GraphTraversal({ algorithm }: { algorithm: string }) {
+export function GraphTraversal({ algorithm }: { algorithm: AlgorithmKey }) {
   const nodes = useBoundStore((s) => s.nodes)
   const edges = useBoundStore((s) => s.edges)
   const speed = useBoundStore((s) => s.speed)
@@ -108,8 +113,8 @@ export function GraphTraversal({ algorithm }: { algorithm: string }) {
 
   const debounce = useDebounce(resetGraph, 100, [resetGraph])
 
-  const [BFSRun, BFSCancel] = useAnimationFrame(
-    ({ complete }) => {
+  const [animationRun, animationCancel] = useAnimationFrame(
+    ({ complete }: CallbackParams) => {
       const index = animationIndex.current
 
       const now = Date.now()
@@ -124,9 +129,13 @@ export function GraphTraversal({ algorithm }: { algorithm: string }) {
 
         // draw stuff here
 
-        const animation = animations.current[index] as BFSAnimation
+        const animation = animations.current[index]
 
-        drawBFSAnimation(animation, nodeRef.current, edgeRef.current, colors)
+        if (algorithm === AlgorithmKey.BFS) {
+          drawBFSAnimation(animation as BFSAnimation, nodeRef.current, edgeRef.current, colors)
+        } else if (algorithm === AlgorithmKey.DFS) {
+          drawDFSAnimation(animation as DFSAnimation, nodeRef.current, edgeRef.current, colors)
+        }
 
         ++animationIndex.current
 
@@ -139,57 +148,25 @@ export function GraphTraversal({ algorithm }: { algorithm: string }) {
     [graph, animationSpeed, visualizationComplete, colors]
   )
 
-  const [DFSRun, DFSCancel] = useAnimationFrame(
-    ({ complete }) => {
-      const index = animationIndex.current
-
-      const now = Date.now()
-      const elapsed = now - previousTimeStamp.current
-
-      // if enough time has elapsed, draw the next frame
-
-      if (elapsed > animationSpeed) {
-        // Get ready for next frame by setting then=now, but...
-        // Also, adjust for fpsInterval not being multiple of 16.67
-        previousTimeStamp.current = now - (elapsed % animationSpeed)
-
-        // draw stuff here
-
-        const animation = animations.current[index] as DFSAnimation
-
-        drawDFSAnimation(animation, nodeRef.current, edgeRef.current, colors)
-
-        ++animationIndex.current
-
-        if (animationIndex.current >= animations.current.length) {
-          complete(visualizationComplete)
-        }
-      }
-    },
-    false,
-    [graph, animationSpeed, visualizationComplete, colors]
-  )
+  const getAnimations = useCallback(() => {
+    if (algorithm === AlgorithmKey.BFS) {
+      animations.current = bfs(graph.nodes)
+    } else if (algorithm === AlgorithmKey.DFS) {
+      animations.current = dfs(graph.nodes)
+    }
+  }, [algorithm, graph.nodes])
 
   useEffect(() => {
     if (isRunning) {
-      if (algorithm === ALGORITHM_HANDLE.BFS) {
-        if (animationIndex.current === 0) {
-          animations.current = bfs(graph.nodes)
-        }
-        previousTimeStamp.current = Date.now()
-        BFSRun()
-      } else if (algorithm === ALGORITHM_HANDLE.DFS) {
-        if (animationIndex.current === 0) {
-          animations.current = dfs(graph.nodes)
-        }
-        previousTimeStamp.current = Date.now()
-        DFSRun()
+      if (animationIndex.current === 0) {
+        getAnimations()
       }
+      previousTimeStamp.current = Date.now()
+      animationRun()
     } else if (isPaused) {
-      BFSCancel()
-      DFSCancel()
+      animationCancel()
     }
-  }, [isRunning, BFSRun, algorithm, graph.nodes, BFSCancel, isPaused, DFSCancel, DFSRun])
+  }, [isRunning, animationRun, animationCancel, isPaused, getAnimations])
 
   useEffect(() => {
     if (isReset) {

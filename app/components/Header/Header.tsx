@@ -81,8 +81,6 @@ function Actions({ isMobile }: { isMobile?: boolean }) {
 
   const windowListener = useCallback(
     (event: KeyboardEvent) => {
-      event.stopPropagation()
-      event.stopImmediatePropagation()
       if (!isReset && event.code === 'KeyR') {
         resetVisualizer()
       }

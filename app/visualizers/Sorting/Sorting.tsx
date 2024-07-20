@@ -13,10 +13,10 @@ import { useBoundStore } from '~/store'
 import styles from './Sorting.module.css'
 import { useAnimationFrame } from '@mhmdjawhar/react-hooks'
 import { drawMergeSortAnimation, drawQuickSortAnimation } from './Sorting.drawer'
-import { ALGORITHM_HANDLE } from '~/static'
+import { AlgorithmKey } from '~/static'
 import type { ArrayNumber } from '~/algorithms/interfaces'
 
-export function Sorting({ algorithm }: { algorithm: string }) {
+export function Sorting({ algorithm }: { algorithm: AlgorithmKey }) {
   const size = useBoundStore((s) => s.size)
   const speed = useBoundStore((s) => s.speed)
   const isRunning = useBoundStore((s) => s.isRunning)
@@ -69,7 +69,7 @@ export function Sorting({ algorithm }: { algorithm: string }) {
     setArray(newArray)
   }, [size])
 
-  const [quickSortRun, quickSortCancel] = useAnimationFrame(
+  const [animationRun, animationCancel] = useAnimationFrame(
     ({ complete }) => {
       const index = animationIndex.current
 
@@ -85,9 +85,13 @@ export function Sorting({ algorithm }: { algorithm: string }) {
 
         // draw stuff here
 
-        const animation = animations.current[index] as QuickSortAnimation
+        const animation = animations.current[index]
 
-        drawQuickSortAnimation(animation, barsRef.current, colors)
+        if (algorithm === AlgorithmKey.QuickSort) {
+          drawQuickSortAnimation(animation as QuickSortAnimation, barsRef.current, colors)
+        } else if (algorithm === AlgorithmKey.MergeSort) {
+          drawMergeSortAnimation(animation as MergeSortAnimation, barsRef.current, colors)
+        }
 
         ++animationIndex.current
 
@@ -100,66 +104,25 @@ export function Sorting({ algorithm }: { algorithm: string }) {
     [array, animationSpeed, visualizationComplete, colors]
   )
 
-  const [mergeSortRun, mergeSortCancel] = useAnimationFrame(
-    ({ complete }) => {
-      const index = animationIndex.current
-
-      const now = Date.now()
-      const elapsed = now - previousTimeStamp.current
-
-      // if enough time has elapsed, draw the next frame
-
-      if (elapsed > animationSpeed) {
-        // Get ready for next frame by setting then=now, but...
-        // Also, adjust for fpsInterval not being multiple of 16.67
-        previousTimeStamp.current = now - (elapsed % animationSpeed)
-
-        // draw stuff here
-
-        const animation = animations.current[index] as MergeSortAnimation
-
-        drawMergeSortAnimation(animation, barsRef.current, colors)
-
-        ++animationIndex.current
-
-        if (animationIndex.current >= animations.current.length) {
-          complete(visualizationComplete)
-        }
-      }
-    },
-    false,
-    [array, animationSpeed, visualizationComplete]
-  )
+  const getAnimations = useCallback(() => {
+    if (algorithm === AlgorithmKey.QuickSort) {
+      animations.current = quickSort(cloneDeep(array))
+    } else if (algorithm === AlgorithmKey.MergeSort) {
+      animations.current = mergeSort(cloneDeep(array))
+    }
+  }, [algorithm, array])
 
   useEffect(() => {
     if (isRunning) {
-      if (algorithm === ALGORITHM_HANDLE.QUICK_SORT) {
-        if (animationIndex.current === 0) {
-          animations.current = quickSort(cloneDeep(array))
-        }
-        previousTimeStamp.current = Date.now()
-        quickSortRun()
-      } else if (algorithm === ALGORITHM_HANDLE.MERGE_SORT) {
-        if (animationIndex.current === 0) {
-          animations.current = mergeSort(cloneDeep(array))
-        }
-        previousTimeStamp.current = Date.now()
-        mergeSortRun()
+      if (animationIndex.current === 0) {
+        getAnimations()
       }
+      previousTimeStamp.current = Date.now()
+      animationRun()
     } else if (isPaused) {
-      quickSortCancel()
-      mergeSortCancel()
+      animationCancel()
     }
-  }, [
-    isRunning,
-    algorithm,
-    array,
-    isPaused,
-    quickSortRun,
-    quickSortCancel,
-    mergeSortRun,
-    mergeSortCancel
-  ])
+  }, [isRunning, isPaused, animationRun, animationCancel, getAnimations])
 
   useLayoutEffect(() => {
     if (isReset) resetArray()

@@ -1,5 +1,5 @@
 import type { MetaFunction } from '@remix-run/node'
-import { ALGORITHM_HANDLE } from '~/static'
+import { AlgorithmKey } from '~/static'
 import { GraphTraversal } from '~/visualizers'
 
 export const meta: MetaFunction = () => {
@@ -10,5 +10,5 @@ export const meta: MetaFunction = () => {
 }
 
 export default function DFS() {
-  return <GraphTraversal algorithm={ALGORITHM_HANDLE.DFS} />
+  return <GraphTraversal algorithm={AlgorithmKey.DFS} />
 }
