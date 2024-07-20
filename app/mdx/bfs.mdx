@@ -1,0 +1,34 @@
+import { Content } from '~/components'
+import { ColorSwatch, Group, Text, Stack } from '@mantine/core'
+
+<Content title="Legends">
+  <Stack>
+    <Group>
+      <ColorSwatch color="var(--mantine-primary-color-7)" />
+      <Text size="lg" fw={600}>
+        <span>Visited node or edge</span>
+      </Text>
+    </Group>
+    <Group>
+      <ColorSwatch color="var(--mantine-color-blue-6)" />
+      <Text size="lg" fw={600}>
+        <span>Dequeued node</span>
+      </Text>
+    </Group>
+  </Stack>
+</Content>
+
+<Content title="Explanation">
+
+Breadth First Search is a **graph traversing** algorithm. The goal of it is to visit
+every node in the graph exactly once. The time complexity of BFS is `O(V+E)` where `V`
+is the number of vertices (nodes) and `E` is the number of edges.
+This is because the algorithm checks every vertex and edge once to determine if it was visited
+or needs to be visited.
+
+The algorithm follows a **breadthward** strategy. It covers the whole depth level of the current
+vertex by checking all its neighbors, visiting the unvisited ones and adding them to the queue.
+Once done, another vertex is dequeued and the same process is applied. The process is then repeated
+starting from a random vertex until the queue becomes empty.
+
+</Content>
