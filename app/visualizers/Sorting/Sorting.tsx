@@ -55,6 +55,7 @@ export function Sorting({ algorithm }: { algorithm: string }) {
 
     const newArray: ArrayNumber[] = []
 
+    // generate values
     for (let i = 0; i < size; i++) {
       newArray.push({
         id: uuidv4(),
@@ -62,7 +63,9 @@ export function Sorting({ algorithm }: { algorithm: string }) {
       })
     }
 
+    // initialize refs array
     barsRef.current = new Array(newArray.length)
+
     setArray(newArray)
   }, [size])
 

@@ -5,14 +5,12 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Stage, Layer, Circle, Line } from 'react-konva'
 import { v4 as uuidv4 } from 'uuid'
 import { bfs } from '~/algorithms'
-import type { Edge, Graph, NodePosition } from '~/algorithms/interfaces'
-import { randomNumberInterval } from '~/helpers'
+import type { Graph, NodePosition } from '~/algorithms/interfaces'
+import { generateEdges, randomNumberInterval } from '~/helpers'
 import { ALGORITHM_HANDLE } from '~/static'
 import { useBoundStore } from '~/store'
 import styles from './GraphTraversal.module.css'
 import { useDebounce, useViewportSize } from '@mhmdjawhar/react-hooks'
-
-const NODE_RADIUS = 20
 
 export function GraphTraversal({ algorithm }: { algorithm: string }) {
   const nodes = useBoundStore((s) => s.nodes)
@@ -48,7 +46,7 @@ export function GraphTraversal({ algorithm }: { algorithm: string }) {
   }, [edges, nodes])
   const animationSpeed = useMemo(() => (1 - speed / 100) * 900 + 100, [speed])
 
-  const [graphState, setGraphState] = useState<Graph>({ graph: [], edges: [] })
+  const [graph, setGraph] = useState<Graph>({ nodes: [], edges: [] })
 
   const edgeRef = useRef<(Konva.Line | null)[][]>([]) //double array
   const nodeRef = useRef<(Konva.Circle | null)[]>([])
@@ -62,10 +60,11 @@ export function GraphTraversal({ algorithm }: { algorithm: string }) {
     initialNodesPos.current = []
     initialEdgesPos.current = []
 
-    const newGraph: Graph = { graph: [], edges: [] }
+    const newGraph: Graph = { nodes: [], edges: [] }
 
     for (let i = 0; i < nodes; i++) {
-      newGraph.graph.push({ id: uuidv4(), neighbors: [] })
+      newGraph.nodes.push({ id: uuidv4(), neighbors: [] })
+      // set initial position for nodes
       initialNodesPos.current.push({
         x: randomNumberInterval(NODE_RADIUS, stageWidth - NODE_RADIUS),
         y: randomNumberInterval(NODE_RADIUS, stageHeight - NODE_RADIUS)
@@ -74,11 +73,13 @@ export function GraphTraversal({ algorithm }: { algorithm: string }) {
 
     newGraph.edges = generateEdges(nodes, numberOfEdges)
 
+    // specifiy neighbors for each node
     newGraph.edges.forEach((edge) => {
-      newGraph.graph[edge.from].neighbors.push(edge.to)
-      newGraph.graph[edge.to].neighbors.push(edge.from)
+      newGraph.nodes[edge.from].neighbors.push(edge.to)
+      newGraph.nodes[edge.to].neighbors.push(edge.from)
     })
 
+    // set initial positions for edges
     newGraph.edges.forEach((edge) => {
       initialEdgesPos.current.push([
         initialNodesPos.current[edge.from].x,
@@ -88,22 +89,25 @@ export function GraphTraversal({ algorithm }: { algorithm: string }) {
       ])
     })
 
+    // initialize refs arrays
+
     const maxNumberOfNodes = 20
 
     edgeRef.current = new Array(maxNumberOfNodes)
     for (let i = 0; i < maxNumberOfNodes; i++) {
       edgeRef.current[i] = new Array(maxNumberOfNodes)
     }
-    nodeRef.current = new Array(newGraph.graph.length)
+    nodeRef.current = new Array(newGraph.nodes.length)
 
-    setGraphState(newGraph)
+    // set new graph
+    setGraph(newGraph)
   }, [stageHeight, stageWidth, nodes, numberOfEdges])
 
   const debounce = useDebounce(resetGraph, 100, [resetGraph])
 
   const BFSRun = useCallback(() => {
     // no need to clone since the algorithm doesn't mess with the indexes
-    const animations = bfs(graphState.graph)
+    const animations = bfs(graph.nodes)
     timeouts.current = new Array(animations.length + 1)
 
     animations.forEach((animation, index) => {
@@ -147,7 +151,7 @@ export function GraphTraversal({ algorithm }: { algorithm: string }) {
     timeouts.current[animations.length + 1] = setTimeout(() => {
       visualizationComplete()
     }, animations.length * animationSpeed)
-  }, [graphState, animationSpeed, colors.PINK, colors.BLUE, visualizationComplete])
+  }, [graph, animationSpeed, colors.PINK, colors.BLUE, visualizationComplete])
 
   // const DFSRun = useCallback(() => {
   //   // no need to clone since the algorithm doesn't mess with the indexes
@@ -255,7 +259,7 @@ export function GraphTraversal({ algorithm }: { algorithm: string }) {
       }
 
       // update all edges positions linked to this node
-      graphState.graph[node].neighbors.forEach((neighbor) => {
+      graph.nodes[node].neighbors.forEach((neighbor) => {
         const edge = edgeRef.current[node][neighbor]
         if (edge) {
           const points = edge.points()
@@ -270,7 +274,7 @@ export function GraphTraversal({ algorithm }: { algorithm: string }) {
         }
       })
     },
-    [stageHeight, stageWidth, graphState]
+    [stageHeight, stageWidth, graph]
   )
 
   const onMouseEnter = useCallback(() => {
@@ -299,7 +303,7 @@ export function GraphTraversal({ algorithm }: { algorithm: string }) {
     <Box className={styles.container} h={stageHeight} w={stageWidth}>
       <Stage height={stageHeight} width={stageWidth}>
         <Layer>
-          {graphState.edges.map((edge, i) => (
+          {graph.edges.map((edge, i) => (
             <Line
               key={edge.id}
               ref={(el) =>
@@ -311,7 +315,7 @@ export function GraphTraversal({ algorithm }: { algorithm: string }) {
               stroke="white"
             />
           ))}
-          {graphState.graph.map((node, i) => (
+          {graph.nodes.map((node, i) => (
             <Circle
               key={node.id}
               id={`${i}`}
@@ -334,44 +338,4 @@ export function GraphTraversal({ algorithm }: { algorithm: string }) {
   )
 }
 
-const generateEdges = (nodes: number, numberOfEdges: number) => {
-  const newEdges: Edge[] = []
-  const allPossibleEdges: Edge[] = []
-  const availableEdges = new Array((nodes * (nodes - 1)) / 2).fill(true)
-
-  for (let i = 0; i < nodes; i++) {
-    for (let j = i + 1; j < nodes; j++) {
-      allPossibleEdges.push({ id: uuidv4(), from: i, to: j })
-    }
-  }
-
-  for (let i = 1; i < nodes; i++) {
-    const j = randomNumberInterval(0, i - 1)
-
-    newEdges.push({ id: uuidv4(), from: j, to: i })
-
-    const index = mapEdgesToIndices(j, i, nodes)
-
-    availableEdges[index] = false
-  }
-
-  for (let i = 0; i < numberOfEdges - (nodes - 1); i++) {
-    const availableEdgesIndices: number[] = []
-    availableEdges.forEach((available, index) => available && availableEdgesIndices.push(index))
-
-    const randomIndex = randomNumberInterval(0, availableEdgesIndices.length - 1)
-
-    const chosenAvailableEdgeIndex = availableEdgesIndices[randomIndex]
-
-    availableEdges[chosenAvailableEdgeIndex] = false
-
-    newEdges.push(allPossibleEdges[chosenAvailableEdgeIndex])
-  }
-
-  return newEdges
-}
-
-const mapEdgesToIndices = (from: number, to: number, numberOfNodes: number) => {
-  const index = from * numberOfNodes - ((from * (from + 1)) / 2 + 1) + (to - from)
-  return index
-}
+const NODE_RADIUS = 20
