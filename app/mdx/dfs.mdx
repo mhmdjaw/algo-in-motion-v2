@@ -1,0 +1,33 @@
+import { Content } from '~/components'
+import { ColorSwatch, Group, Text, Stack } from '@mantine/core'
+
+<Content title="Legends">
+  <Stack>
+    <Group>
+      <ColorSwatch color="var(--mantine-primary-color-7)" />
+      <Text size="lg" fw={600}>
+        <span>Visited node or edge</span>
+      </Text>
+    </Group>
+    <Group>
+      <ColorSwatch color="var(--mantine-color-blue-6)" />
+      <Text size="lg" fw={600}>
+        <span>Backtracked node or edge</span>
+      </Text>
+    </Group>
+  </Stack>
+</Content>
+
+<Content title="Explanation">
+
+Like Breadth First Search, Depth First Search is also a **graph traversing** algorithm,
+and has the same time complexity of `O(V+E)`. The technique however is the opposite of
+BFS as the name states.
+
+DFS, unlike BFS, follows a **depthward** strategy. Starting from a random vertex, it goes
+as deep as possible from a vertex to another, each step moving immediately to the first
+unvisited neighbor. Upon reaching a dead end (when all the neighbors of the current vertex are visited),
+it starts backtracking one step at a time looking for another unvisited vertex and repeating the same
+process going back and forth until it backtracks to the first vertex it started from.
+
+</Content>
