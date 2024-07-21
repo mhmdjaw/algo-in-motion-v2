@@ -9,7 +9,7 @@ const sizeAlgorithms = [ALGORITHM_HANDLE.QUICK_SORT, ALGORITHM_HANDLE.MERGE_SORT
 const nodesAlgorithms = [ALGORITHM_HANDLE.BFS, ALGORITHM_HANDLE.DFS]
 const edgesAlgorithms = [ALGORITHM_HANDLE.BFS, ALGORITHM_HANDLE.DFS]
 const pointsAlgorithms = [ALGORITHM_HANDLE.TIMES_TABLE]
-const citiesAlgorithms = [ALGORITHM_HANDLE.PATHFINDING]
+const citiesAlgorithms = [ALGORITHM_HANDLE.TRAVELING_SALESMAN]
 
 export function Options() {
   const location = useLocation()
@@ -34,6 +34,7 @@ export function Options() {
   const size = useBoundStore((s) => s.size)
   const nodes = useBoundStore((s) => s.nodes)
   const edges = useBoundStore((s) => s.edges)
+  const cities = useBoundStore((s) => s.cities)
 
   useEffect(() => {
     resetAllSlices()
@@ -75,6 +76,20 @@ export function Options() {
             value={edges}
             onChange={changeOption('edges', resetVisualizer)}
             label={null}
+          />
+        </Stack>
+      )}
+      {citiesAvailable && (
+        <Stack className={styles.optionContainer}>
+          <Text className={styles.label}>Edges</Text>
+          <Slider
+            w="100%"
+            value={cities}
+            onChange={changeOption('cities', resetVisualizer)}
+            step={1}
+            min={3}
+            max={8}
+            marks={[{ value: 4.5 }, { value: 6.5 }]}
           />
         </Stack>
       )}

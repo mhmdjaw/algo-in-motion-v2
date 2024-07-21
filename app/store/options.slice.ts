@@ -8,7 +8,7 @@ const initialOptionsState = {
   nodes: 12,
   edges: 0,
   points: 200,
-  cities: 8
+  cities: 6
 }
 
 interface Options {

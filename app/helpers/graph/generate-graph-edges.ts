@@ -1,6 +1,6 @@
 import type { GraphEdge } from '~/algorithms/interfaces'
 import { v4 as uuidv4 } from 'uuid'
-import { randomNumberInterval } from './random-number-interval'
+import { randomNumberInterval } from '../general'
 
 export const generateEdges = (nodes: number, numberOfEdges: number) => {
   const newEdges: GraphEdge[] = []

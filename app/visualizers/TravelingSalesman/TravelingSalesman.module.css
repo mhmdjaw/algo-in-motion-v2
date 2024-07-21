@@ -1,0 +1,6 @@
+.container {
+  margin: 0 auto;
+  background-color: var(--mantine-color-dark-8);
+  border: var(--mantine-border-width) solid var(--mantine-border-color);
+  border-radius: var(--mantine-radius-md);
+}
