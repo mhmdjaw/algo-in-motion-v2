@@ -60,7 +60,7 @@ export function TravelingSalesman() {
 
   const { stageWidth, stageHeight } = useStageDimensions()
 
-  const animationSpeed = useMemo(() => (1 - speed / 100) * 481 + 10, [speed])
+  const animationSpeed = useMemo(() => (1 - speed / 100) * 481 + 8, [speed])
 
   const resetCities = useCallback(() => {
     animationIndex.current = 0
@@ -140,6 +140,7 @@ export function TravelingSalesman() {
         ++animationIndex.current
 
         if (animationIndex.current >= animations.current.length) {
+          console.log(new Date().toLocaleTimeString())
           complete(visualizationComplete)
         }
       }
@@ -154,6 +155,7 @@ export function TravelingSalesman() {
         animations.current = travelingSalesman(distances.current)
       }
       previousTimeStamp.current = Date.now()
+      console.log(new Date().toLocaleTimeString())
       animationRun()
     } else if (isPaused) {
       animationCancel()

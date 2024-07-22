@@ -18,8 +18,16 @@ import { ColorSwatch, Group, Text, Stack } from '@mantine/core'
   </Stack>
   <br />
   <br />
-  **NOTE:** Cities cannot be dragged once the visualization begins. This is to prevent the distances
-  between cities from changing while the visualization is running.
+
+**NOTES:**
+
+- Cities cannot be dragged once the visualization begins. This is to prevent the distances
+  between cities from changing while the visualizer is running.
+
+- If both, number of cities and visualizer speed are set to max, the duration of the visualization
+  takes at least `5:23` minutes to finish assuming your **FPS** can go higher than 120 (the FPS for
+  this specific visualization is capped at 120, so it will never take less than that).
+
 </Content>
 
 <Content title="Explanation">

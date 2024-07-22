@@ -81,7 +81,7 @@ export function Options() {
       )}
       {citiesAvailable && (
         <Stack className={styles.optionContainer}>
-          <Text className={styles.label}>Edges</Text>
+          <Text className={styles.label}>Cities</Text>
           <Slider
             w="100%"
             value={cities}

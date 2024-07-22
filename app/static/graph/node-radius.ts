@@ -1,1 +1,1 @@
-export const NODE_RADIUS = 20
+export const NODE_RADIUS = 22
