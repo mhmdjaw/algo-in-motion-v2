@@ -18,18 +18,18 @@ export const generateEdges = (nodes: number, numberOfEdges: number) => {
 
     newEdges.push({ id: uuidv4(), from: j, to: i })
 
-    const index = mapEdgesToIndices(j, i, nodes)
+    const index = mapEdgesToIndexes(j, i, nodes)
 
     availableEdges[index] = false
   }
 
   for (let i = 0; i < numberOfEdges - (nodes - 1); i++) {
-    const availableEdgesIndices: number[] = []
-    availableEdges.forEach((available, index) => available && availableEdgesIndices.push(index))
+    const availableEdgesIndexes: number[] = []
+    availableEdges.forEach((available, index) => available && availableEdgesIndexes.push(index))
 
-    const randomIndex = randomNumberInterval(0, availableEdgesIndices.length - 1)
+    const randomIndex = randomNumberInterval(0, availableEdgesIndexes.length - 1)
 
-    const chosenAvailableEdgeIndex = availableEdgesIndices[randomIndex]
+    const chosenAvailableEdgeIndex = availableEdgesIndexes[randomIndex]
 
     availableEdges[chosenAvailableEdgeIndex] = false
 
@@ -39,7 +39,7 @@ export const generateEdges = (nodes: number, numberOfEdges: number) => {
   return newEdges
 }
 
-const mapEdgesToIndices = (from: number, to: number, numberOfNodes: number) => {
+const mapEdgesToIndexes = (from: number, to: number, numberOfNodes: number) => {
   const index = from * numberOfNodes - ((from * (from + 1)) / 2 + 1) + (to - from)
   return index
 }

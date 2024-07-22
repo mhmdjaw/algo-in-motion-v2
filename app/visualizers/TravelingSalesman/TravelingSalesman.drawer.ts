@@ -17,9 +17,9 @@ export const drawTSAnimation = (
 
   switch (animation.action) {
     case 'CURRENT_POSSIBILITY': {
-      for (let i = 0; i < animation.index.length - 1; i++) {
-        const currentCity = animation.index[i]
-        const nextCity = animation.index[i + 1]
+      for (let i = 0; i < animation.indexes.length - 1; i++) {
+        const currentCity = animation.indexes[i]
+        const nextCity = animation.indexes[i + 1]
         const x1 = city[currentCity]?.x() as number
         const y1 = city[currentCity]?.y() as number
         const x2 = city[nextCity]?.x() as number
@@ -32,14 +32,14 @@ export const drawTSAnimation = (
     }
 
     case 'CURRENT_SOLUTION': {
-      for (let i = 0; i < animation.index.length; i++) {
-        if (i === animation.index.length - 1) {
-          const lastCity = animation.index[i]
+      for (let i = 0; i < animation.indexes.length; i++) {
+        if (i === animation.indexes.length - 1) {
+          const lastCity = animation.indexes[i]
           city[lastCity]?.fill(PINK)
           break
         }
-        const currentCity = animation.index[i]
-        const nextCity = animation.index[i + 1]
+        const currentCity = animation.indexes[i]
+        const nextCity = animation.indexes[i + 1]
         const x1 = city[currentCity]?.x() as number
         const y1 = city[currentCity]?.y() as number
         const x2 = city[nextCity]?.x() as number
@@ -47,6 +47,14 @@ export const drawTSAnimation = (
         edgesSol[i]?.points([x1, y1, x2, y2])
         city[currentCity]?.fill(PINK)
         edgesSol[i]?.stroke(PINK)
+      }
+
+      break
+    }
+
+    case 'SOLUTION_FOUND': {
+      for (let i = 0; i < animation.indexes.length; i++) {
+        edgesPoss[i]?.points([0, 0, 0, 0])
       }
 
       break

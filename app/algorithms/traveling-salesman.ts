@@ -1,6 +1,6 @@
 export interface TSAnimation {
-  action: 'CURRENT_POSSIBILITY' | 'CURRENT_SOLUTION'
-  index: number[]
+  action: 'CURRENT_POSSIBILITY' | 'CURRENT_SOLUTION' | 'SOLUTION_FOUND'
+  indexes: number[]
 }
 
 export const travelingSalesman = (d: number[][]): TSAnimation[] => {
@@ -13,6 +13,8 @@ export const travelingSalesman = (d: number[][]): TSAnimation[] => {
   const minDistance = Number.MAX_VALUE
 
   tsm(cities, d, currentPath, sol, distance, minDistance, animations)
+
+  animations.push({ action: 'SOLUTION_FOUND', indexes: animations.at(-1)?.indexes.slice() || [] })
 
   return animations
 }
@@ -30,14 +32,14 @@ const tsm = (
     // current Possibility
     animations.push({
       action: 'CURRENT_POSSIBILITY',
-      index: currentPath.slice()
+      indexes: currentPath.slice()
     })
     if (distance < minDistance) {
       // current best path
       minDistance = distance
       animations.push({
         action: 'CURRENT_SOLUTION',
-        index: currentPath.slice()
+        indexes: currentPath.slice()
       })
     }
   } else if (currentPath.length === 0) {
@@ -48,7 +50,6 @@ const tsm = (
       currentPath.pop()
       cities[i] = false
     }
-    console.log(minDistance)
   } else {
     for (let i = 0; i < cities.length; i++) {
       if (cities[i] === false) {

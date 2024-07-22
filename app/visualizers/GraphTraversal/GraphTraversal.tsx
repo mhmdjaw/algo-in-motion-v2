@@ -106,7 +106,6 @@ export function GraphTraversal({ algorithm }: { algorithm: AlgorithmKey }) {
 
     // set new graph
     setGraph(newGraph)
-    console.log(initialPositions.current)
   }, [stageHeight, stageWidth, nodes, numberOfEdges])
 
   const debounce = useDebounce(resetGraph, 100, [resetGraph])
