@@ -10,15 +10,15 @@ export const useGraphNodeEvents = () => {
     document.body.style.cursor = 'default'
   }, [])
 
-  const onDragStart = useCallback((e: KonvaEventObject<DragEvent>) => {
+  const onMouseDown = useCallback((e: KonvaEventObject<DragEvent>) => {
     document.body.style.cursor = 'grabbing'
     e.target.to({ scaleX: 1.2, scaleY: 1.2, duration: 0.05 })
   }, [])
 
-  const onDragEnd = useCallback((e: KonvaEventObject<DragEvent>) => {
+  const onMouseUp = useCallback((e: KonvaEventObject<DragEvent>) => {
     document.body.style.cursor = 'grab'
     e.target.to({ scaleX: 1, scaleY: 1, duration: 0.05 })
   }, [])
 
-  return { onMouseEnter, onMouseLeave, onDragStart, onDragEnd }
+  return { onMouseEnter, onMouseLeave, onMouseDown, onMouseUp }
 }

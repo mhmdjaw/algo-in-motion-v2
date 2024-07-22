@@ -10,7 +10,7 @@ import { generateEdges, getDragMoveDetails, randomNumberInterval } from '~/helpe
 import { AlgorithmKey, NODE_RADIUS } from '~/static'
 import { useBoundStore } from '~/store'
 import styles from './GraphTraversal.module.css'
-import { useAnimationFrame, useDebounce, type CallbackParams } from '@mhmdjawhar/react-hooks'
+import { useAnimationFrame, useDebounce } from '@mhmdjawhar/react-hooks'
 import { drawBFSAnimation, drawDFSAnimation } from './GraphTraversal.drawer'
 import { useGraphNodeEvents, useStageDimensions } from '~/hooks'
 
@@ -25,12 +25,17 @@ export function GraphTraversal({ algorithm }: { algorithm: AlgorithmKey }) {
 
   const [graph, setGraph] = useState<Graph>({ nodes: [], edges: [] })
 
+  // HTML Element refs
   const edgeRef = useRef<(Konva.Line | null)[][]>([]) //double array
   const nodeRef = useRef<(Konva.Circle | null)[]>([])
+
+  // positions refs
   const initialPositions = useRef<GraphTraversalPositions>({
     nodesPositions: [],
     edgesPositions: []
   })
+
+  // animation related refs
   const animations = useRef<BFSAnimation[] | DFSAnimation[]>([])
   const animationIndex = useRef<number>(0)
   const previousTimeStamp = useRef(Date.now())
@@ -61,6 +66,7 @@ export function GraphTraversal({ algorithm }: { algorithm: AlgorithmKey }) {
 
     const newGraph: Graph = { nodes: [], edges: [] }
 
+    // initialize nodes
     for (let i = 0; i < nodes; i++) {
       newGraph.nodes.push({ id: uuidv4(), neighbors: [] })
       // set initial position for nodes
@@ -70,6 +76,7 @@ export function GraphTraversal({ algorithm }: { algorithm: AlgorithmKey }) {
       })
     }
 
+    // initialize edges
     newGraph.edges = generateEdges(nodes, numberOfEdges)
 
     // specifiy neighbors for each node
@@ -89,12 +96,11 @@ export function GraphTraversal({ algorithm }: { algorithm: AlgorithmKey }) {
     })
 
     // initialize refs arrays
+    const MAX_NODES = 20
 
-    const maxNumberOfNodes = 20
-
-    edgeRef.current = new Array(maxNumberOfNodes)
-    for (let i = 0; i < maxNumberOfNodes; i++) {
-      edgeRef.current[i] = new Array(maxNumberOfNodes)
+    edgeRef.current = new Array(MAX_NODES)
+    for (let i = 0; i < MAX_NODES; i++) {
+      edgeRef.current[i] = new Array(MAX_NODES)
     }
     nodeRef.current = new Array(newGraph.nodes.length)
 
@@ -106,7 +112,7 @@ export function GraphTraversal({ algorithm }: { algorithm: AlgorithmKey }) {
   const debounce = useDebounce(resetGraph, 100, [resetGraph])
 
   const [animationRun, animationCancel] = useAnimationFrame(
-    ({ complete }: CallbackParams) => {
+    ({ complete }) => {
       const index = animationIndex.current
 
       const now = Date.now()

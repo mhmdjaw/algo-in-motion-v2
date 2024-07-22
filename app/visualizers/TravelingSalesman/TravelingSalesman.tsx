@@ -5,13 +5,14 @@ import { Circle, Layer, Line, Stage } from 'react-konva'
 import { Box, useMantineTheme } from '@mantine/core'
 import type { Cities, GraphTSPositions } from '~/algorithms/interfaces'
 import { useBoundStore } from '~/store'
-import { useDebounce } from '@mhmdjawhar/react-hooks'
+import { useAnimationFrame, useDebounce } from '@mhmdjawhar/react-hooks'
 import { getDragMoveDetails, randomNumberInterval } from '~/helpers'
-import { travelingSalesman } from '~/algorithms'
+import { travelingSalesman, type TSAnimation } from '~/algorithms'
 import type { KonvaEventObject } from 'konva/lib/Node'
 import styles from './TravelingSalesman.module.css'
 import { NODE_RADIUS } from '~/static'
 import { useGraphNodeEvents, useStageDimensions } from '~/hooks'
+import { drawTSAnimation } from './TravelingSalesman.drawer'
 
 export function TravelingSalesman() {
   const cities = useBoundStore((s) => s.cities)
@@ -28,17 +29,25 @@ export function TravelingSalesman() {
     edgesSolution: []
   })
 
+  // HTML Element refs
   const edgeSolRef = useRef<(Konva.Line | null)[]>([])
   const edgePossRef = useRef<(Konva.Line | null)[]>([])
   const cityRef = useRef<(Konva.Circle | null)[]>([])
+
+  // Position refs
   const positions = useRef<GraphTSPositions>({
     nodesPositions: [],
     edgesPossPositions: [],
     edgesSolPositions: []
   })
+
+  // distances between cities refs
   const distances = useRef<number[][]>([])
-  const timeoutsChunks = useRef<Array<NodeJS.Timeout>>([])
-  const timeouts = useRef<Array<NodeJS.Timeout>>([])
+
+  // animation related refs
+  const animations = useRef<TSAnimation[]>([])
+  const animationIndex = useRef<number>(0)
+  const previousTimeStamp = useRef(Date.now())
 
   const theme = useMantineTheme()
   const colors = useMemo(
@@ -54,8 +63,8 @@ export function TravelingSalesman() {
   const animationSpeed = useMemo(() => (1 - speed / 100) * 481 + 10, [speed])
 
   const resetCities = useCallback(() => {
-    timeoutsChunks.current.map((timeout) => clearTimeout(timeout))
-    timeouts.current.map((timeout) => clearTimeout(timeout))
+    animationIndex.current = 0
+
     distances.current = new Array(cities)
     for (let i = 0; i < cities; i++) {
       distances.current[i] = new Array(cities)
@@ -73,14 +82,17 @@ export function TravelingSalesman() {
       edgesSolution: []
     }
 
+    // initialize cities
     for (let i = 0; i < cities; i++) {
       newCities.cities.push(uuidv4())
+      // set initial position for cities (nodes)
       nodesPositions.push({
         x: randomNumberInterval(NODE_RADIUS, stageWidth - NODE_RADIUS),
         y: randomNumberInterval(NODE_RADIUS, stageHeight - NODE_RADIUS)
       })
     }
 
+    // calculate distances between cities
     for (let i = 0; i < cities; i++) {
       for (let j = 0; j < cities; j++) {
         const a = nodesPositions[i].x - nodesPositions[j].x
@@ -89,11 +101,13 @@ export function TravelingSalesman() {
       }
     }
 
+    // initialize edges (possibilities and solutions)
     for (let i = 0; i < cities - 1; i++) {
       newCities.edgesPossibility.push(uuidv4())
       newCities.edgesSolution.push(uuidv4())
     }
 
+    // initialize refs arrays
     cityRef.current = new Array(cities)
     edgePossRef.current = new Array(cities - 1)
     edgeSolRef.current = new Array(cities - 1)
@@ -103,143 +117,48 @@ export function TravelingSalesman() {
 
   const debounce = useDebounce(resetCities, 100, [resetCities])
 
-  const travelingSalesmanRun = useCallback(() => {
-    const animations = travelingSalesman(distances.current)
-    timeouts.current = new Array(animations.length)
+  const [animationRun, animationCancel] = useAnimationFrame(
+    ({ complete }) => {
+      const index = animationIndex.current
 
-    const chunks = Math.floor(animations.length / 1500)
+      const now = Date.now()
+      const elapsed = now - previousTimeStamp.current
 
-    timeoutsChunks.current = new Array(chunks + 2)
+      // if enough time has elapsed, draw the next frame
 
-    for (let t = 0; t < chunks; t++) {
-      timeoutsChunks.current[t] = setTimeout(
-        () => {
-          timeouts.current = new Array(1500)
-          let count = 0
-          for (let index = t * 1500; index < (t + 1) * 1500; index++) {
-            const animation = animations[index]
-            const { BLUE, PINK } = colors
-            switch (animation.action) {
-              case 'CURRENT_POSSIBILITY': {
-                timeouts.current[count] = setTimeout(() => {
-                  for (let i = 0; i < animation.index.length - 1; i++) {
-                    const city = animation.index[i]
-                    const nextCity = animation.index[i + 1]
-                    const x1 = cityRef.current[city]?.x() as number
-                    const y1 = cityRef.current[city]?.y() as number
-                    const x2 = cityRef.current[nextCity]?.x() as number
-                    const y2 = cityRef.current[nextCity]?.y() as number
-                    edgePossRef.current[i]?.points([x1, y1, x2, y2])
-                    edgePossRef.current[i]?.stroke(BLUE)
-                  }
-                }, count * animationSpeed)
+      if (elapsed > animationSpeed) {
+        // Get ready for next frame by setting then=now, but...
+        // Also, adjust for fpsInterval not being multiple of 16.67
+        previousTimeStamp.current = now - (elapsed % animationSpeed)
 
-                break
-              }
+        // draw stuff here
 
-              case 'CURRENT_SOLUTION': {
-                timeouts.current[index] = setTimeout(() => {
-                  for (let i = 0; i < animation.index.length; i++) {
-                    if (i === animation.index.length - 1) {
-                      const lastCity = animation.index[i]
-                      cityRef.current[lastCity]?.fill(PINK)
-                      break
-                    }
-                    const city = animation.index[i]
-                    const nextCity = animation.index[i + 1]
-                    const x1 = cityRef.current[city]?.x() as number
-                    const y1 = cityRef.current[city]?.y() as number
-                    const x2 = cityRef.current[nextCity]?.x() as number
-                    const y2 = cityRef.current[nextCity]?.y() as number
-                    edgeSolRef.current[i]?.points([x1, y1, x2, y2])
-                    cityRef.current[city]?.fill(PINK)
-                    edgeSolRef.current[i]?.stroke(PINK)
-                  }
-                }, count * animationSpeed)
+        const animation = animations.current[index]
 
-                break
-              }
+        drawTSAnimation(animation, cityRef.current, edgePossRef.current, edgeSolRef.current, colors)
 
-              default:
-                break
-            }
-            count++
-          }
-        },
-        t * 1500 * animationSpeed
-      )
-    }
+        ++animationIndex.current
 
-    const lastChunk = animations.length % 1500
-    timeouts.current = new Array(lastChunk)
-
-    //repetitive code to repeat the entire process on the last chunk
-    timeoutsChunks.current[chunks] = setTimeout(
-      () => {
-        let count = 0
-        for (let index = animations.length - lastChunk; index < animations.length; index++) {
-          const animation = animations[index]
-          const { BLUE, PINK } = colors
-          switch (animation.action) {
-            case 'CURRENT_POSSIBILITY': {
-              timeouts.current[count] = setTimeout(() => {
-                for (let i = 0; i < animation.index.length - 1; i++) {
-                  const city = animation.index[i]
-                  const nextCity = animation.index[i + 1]
-                  const x1 = cityRef.current[city]?.x() as number
-                  const y1 = cityRef.current[city]?.y() as number
-                  const x2 = cityRef.current[nextCity]?.x() as number
-                  const y2 = cityRef.current[nextCity]?.y() as number
-                  edgePossRef.current[i]?.points([x1, y1, x2, y2])
-                  edgePossRef.current[i]?.stroke(BLUE)
-                }
-              }, count * animationSpeed)
-
-              break
-            }
-
-            case 'CURRENT_SOLUTION': {
-              timeouts.current[index] = setTimeout(() => {
-                for (let i = 0; i < animation.index.length; i++) {
-                  if (i === animation.index.length - 1) {
-                    const lastCity = animation.index[i]
-                    cityRef.current[lastCity]?.fill(PINK)
-                    break
-                  }
-                  const city = animation.index[i]
-                  const nextCity = animation.index[i + 1]
-                  const x1 = cityRef.current[city]?.x() as number
-                  const y1 = cityRef.current[city]?.y() as number
-                  const x2 = cityRef.current[nextCity]?.x() as number
-                  const y2 = cityRef.current[nextCity]?.y() as number
-                  edgeSolRef.current[i]?.points([x1, y1, x2, y2])
-                  cityRef.current[city]?.fill(PINK)
-                  edgeSolRef.current[i]?.stroke(PINK)
-                }
-              }, count * animationSpeed)
-
-              break
-            }
-
-            default:
-              break
-          }
-          count++
+        if (animationIndex.current >= animations.current.length) {
+          complete(visualizationComplete)
         }
-      },
-      chunks * 1500 * animationSpeed
-    )
-
-    timeoutsChunks.current[chunks + 1] = setTimeout(() => {
-      visualizationComplete()
-    }, animations.length * animationSpeed)
-  }, [animationSpeed, colors, visualizationComplete])
+      }
+    },
+    false,
+    [citiesState, animationSpeed, visualizationComplete, colors]
+  )
 
   useEffect(() => {
     if (isRunning) {
-      travelingSalesmanRun()
+      if (animationIndex.current === 0) {
+        animations.current = travelingSalesman(distances.current)
+      }
+      previousTimeStamp.current = Date.now()
+      animationRun()
+    } else if (isPaused) {
+      animationCancel()
     }
-  }, [isRunning, travelingSalesmanRun])
+  }, [isRunning, animationRun, animationCancel, isPaused])
 
   useEffect(() => {
     if (isReset) debounce()

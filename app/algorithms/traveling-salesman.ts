@@ -1,4 +1,4 @@
-interface TSAnimation {
+export interface TSAnimation {
   action: 'CURRENT_POSSIBILITY' | 'CURRENT_SOLUTION'
   index: number[]
 }
