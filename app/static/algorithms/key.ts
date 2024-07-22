@@ -3,7 +3,7 @@ export enum AlgorithmKey {
   MergeSort = 'MERGE_SORT',
   BFS = 'BFS',
   DFS = 'DFS',
-  TimesTable = 'TIMES_TABLE',
+  TimesTables = 'TIMES_TABLES',
   TravelingSalesman = 'TRAVELING_SALESMAN',
   Pathfinding = 'PATHFINDING'
 }

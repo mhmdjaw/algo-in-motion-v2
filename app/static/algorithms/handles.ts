@@ -5,7 +5,7 @@ export const ALGORITHM_HANDLE = {
   [AlgorithmKey.MergeSort]: 'merge-sort',
   [AlgorithmKey.BFS]: 'bfs',
   [AlgorithmKey.DFS]: 'dfs',
-  [AlgorithmKey.TimesTable]: 'times-table',
+  [AlgorithmKey.TimesTables]: 'times-tables',
   [AlgorithmKey.TravelingSalesman]: 'traveling-salesman',
   [AlgorithmKey.Pathfinding]: 'pathfinding'
 }
