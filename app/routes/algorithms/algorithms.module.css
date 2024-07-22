@@ -3,3 +3,7 @@
   padding: 0 rem(16);
   font-size: var(--mantine-font-size-lg);
 }
+
+.infoContainer :where(code) {
+  font-size: var(--mantine-font-size-lg);
+}

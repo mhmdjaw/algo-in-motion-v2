@@ -1,0 +1,38 @@
+import { Content } from '~/components'
+import { ColorSwatch, Group, Text, Stack } from '@mantine/core'
+
+<Content title="Legends">
+  <Stack>
+    <Group>
+      <ColorSwatch color="var(--mantine-primary-color-7)" />
+      <Text size="lg" fw={600}>
+        <span>Current best path</span>
+      </Text>
+    </Group>
+    <Group>
+      <ColorSwatch color="var(--mantine-color-blue-6)" />
+      <Text size="lg" fw={600}>
+        <span>Current possbility</span>
+      </Text>
+    </Group>
+  </Stack>
+  <br />
+  <br />
+  **NOTE:** Cities cannot be dragged once the visualization begins. This is to prevent the distances
+  between cities from changing while the visualization is running.
+</Content>
+
+<Content title="Explanation">
+
+The Traveling Salesman problem is described as a salesman who must travel `N` number of cities,
+and the goal is to find the shortest possible route to visit each city exactly once.
+The ordering of cities doesn't matter.
+
+The problem is a famous **NP-hard** problem. Meaning There is no known polynomial time solution for it.
+
+The **backtracking** technique generates all `N!` possible routes, calculates the cost of each route,
+and keeps track of the current best route with the minimum cost. Since the algorithm goes through
+all the different possibilities, the time complexity is an exponential `O(N!)`. That is the reason the
+maximum number of cities in the visualizer is limited to 8.
+
+</Content>
