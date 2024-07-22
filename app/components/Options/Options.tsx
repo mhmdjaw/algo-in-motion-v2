@@ -8,7 +8,7 @@ import { ALGORITHM_HANDLE } from '~/static'
 const sizeAlgorithms = [ALGORITHM_HANDLE.QUICK_SORT, ALGORITHM_HANDLE.MERGE_SORT]
 const nodesAlgorithms = [ALGORITHM_HANDLE.BFS, ALGORITHM_HANDLE.DFS]
 const edgesAlgorithms = [ALGORITHM_HANDLE.BFS, ALGORITHM_HANDLE.DFS]
-const pointsAlgorithms = [ALGORITHM_HANDLE.TIMES_TABLE]
+const pointsAlgorithms = [ALGORITHM_HANDLE.TIMES_TABLES]
 const citiesAlgorithms = [ALGORITHM_HANDLE.TRAVELING_SALESMAN]
 
 export function Options() {
@@ -34,6 +34,7 @@ export function Options() {
   const size = useBoundStore((s) => s.size)
   const nodes = useBoundStore((s) => s.nodes)
   const edges = useBoundStore((s) => s.edges)
+  const points = useBoundStore((s) => s.points)
   const cities = useBoundStore((s) => s.cities)
 
   useEffect(() => {
@@ -76,6 +77,18 @@ export function Options() {
             value={edges}
             onChange={changeOption('edges', resetVisualizer)}
             label={null}
+          />
+        </Stack>
+      )}
+      {pointsAvailable && (
+        <Stack className={styles.optionContainer}>
+          <Text className={styles.label}>Points</Text>
+          <Slider
+            w="100%"
+            value={points}
+            onChange={changeOption('points', resetVisualizer)}
+            min={10}
+            max={600}
           />
         </Stack>
       )}

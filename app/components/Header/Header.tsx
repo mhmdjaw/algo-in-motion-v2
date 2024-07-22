@@ -56,7 +56,7 @@ function Actions({ isMobile }: { isMobile?: boolean }) {
   const isComplete = useBoundStore((s) => s.isComplete)
   const isRunning = useBoundStore((s) => s.isRunning)
   const isGenerating = useBoundStore((s) => s.isGenerating)
-  const isReset = useBoundStore((s) => s.isReset())
+  const shouldReset = useBoundStore((s) => s.shouldReset())
 
   const resetVisualizer = useBoundStore((s) => s.resetVisualizer)
   const runVisualizer = useBoundStore((s) => s.runVisualizer)
@@ -81,14 +81,14 @@ function Actions({ isMobile }: { isMobile?: boolean }) {
 
   const windowListener = useCallback(
     (event: KeyboardEvent) => {
-      if (!isReset && event.code === 'KeyR') {
+      if (!shouldReset && event.code === 'KeyR') {
         resetVisualizer()
       }
       if (!isComplete && event.code === 'KeyP') {
         handleAction()
       }
     },
-    [handleAction, isComplete, isReset, resetVisualizer]
+    [handleAction, isComplete, shouldReset, resetVisualizer]
   )
 
   useWindowEvent('keydown', windowListener)
@@ -100,7 +100,7 @@ function Actions({ isMobile }: { isMobile?: boolean }) {
         leftSection={!isMobile ? <FaUndoAlt /> : undefined}
         rightSection={!isMobile ? <Kbd>R key</Kbd> : undefined}
         onClick={resetVisualizer}
-        disabled={isReset}
+        disabled={shouldReset}
       >
         {isMobile ? <FaUndoAlt /> : 'Reset'}
       </Button>

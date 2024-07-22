@@ -20,7 +20,7 @@ export function TravelingSalesman() {
   const isRunning = useBoundStore((s) => s.isRunning)
   const isPaused = useBoundStore((s) => s.isPaused)
   const isComplete = useBoundStore((s) => s.isComplete)
-  const isReset = useBoundStore((s) => s.isReset())
+  const shouldReset = useBoundStore((s) => s.shouldReset())
   const visualizationComplete = useBoundStore((s) => s.visualizationComplete)
 
   const [citiesState, setCitiesState] = useState<Cities>({
@@ -62,7 +62,40 @@ export function TravelingSalesman() {
 
   const animationSpeed = useMemo(() => (1 - speed / 100) * 481 + 8, [speed])
 
+  const [animationRun, animationCancel] = useAnimationFrame(
+    ({ complete }) => {
+      const index = animationIndex.current
+
+      const now = Date.now()
+      const elapsed = now - previousTimeStamp.current
+
+      // if enough time has elapsed, draw the next frame
+
+      if (elapsed > animationSpeed) {
+        // Get ready for next frame by setting then=now, but...
+        // Also, adjust for fpsInterval not being multiple of 16.67
+        previousTimeStamp.current = now - (elapsed % animationSpeed)
+
+        // draw stuff here
+
+        const animation = animations.current[index]
+
+        drawTSAnimation(animation, cityRef.current, edgePossRef.current, edgeSolRef.current, colors)
+
+        ++animationIndex.current
+
+        if (animationIndex.current >= animations.current.length) {
+          complete(visualizationComplete)
+        }
+      }
+    },
+    false,
+    [animationSpeed, visualizationComplete, colors]
+  )
+
   const resetCities = useCallback(() => {
+    animationCancel()
+
     animationIndex.current = 0
 
     distances.current = new Array(cities)
@@ -113,41 +146,9 @@ export function TravelingSalesman() {
     edgeSolRef.current = new Array(cities - 1)
 
     setCitiesState(newCities)
-  }, [cities, stageHeight, stageWidth])
+  }, [animationCancel, cities, stageHeight, stageWidth])
 
   const debounce = useDebounce(resetCities, 100, [resetCities])
-
-  const [animationRun, animationCancel] = useAnimationFrame(
-    ({ complete }) => {
-      const index = animationIndex.current
-
-      const now = Date.now()
-      const elapsed = now - previousTimeStamp.current
-
-      // if enough time has elapsed, draw the next frame
-
-      if (elapsed > animationSpeed) {
-        // Get ready for next frame by setting then=now, but...
-        // Also, adjust for fpsInterval not being multiple of 16.67
-        previousTimeStamp.current = now - (elapsed % animationSpeed)
-
-        // draw stuff here
-
-        const animation = animations.current[index]
-
-        drawTSAnimation(animation, cityRef.current, edgePossRef.current, edgeSolRef.current, colors)
-
-        ++animationIndex.current
-
-        if (animationIndex.current >= animations.current.length) {
-          console.log(new Date().toLocaleTimeString())
-          complete(visualizationComplete)
-        }
-      }
-    },
-    false,
-    [citiesState, animationSpeed, visualizationComplete, colors]
-  )
 
   useEffect(() => {
     if (isRunning) {
@@ -155,7 +156,6 @@ export function TravelingSalesman() {
         animations.current = travelingSalesman(distances.current)
       }
       previousTimeStamp.current = Date.now()
-      console.log(new Date().toLocaleTimeString())
       animationRun()
     } else if (isPaused) {
       animationCancel()
@@ -163,8 +163,8 @@ export function TravelingSalesman() {
   }, [isRunning, animationRun, animationCancel, isPaused])
 
   useEffect(() => {
-    if (isReset) debounce()
-  }, [debounce, isReset])
+    if (shouldReset) debounce()
+  }, [debounce, shouldReset])
 
   const handleDragMove = useCallback(
     (e: KonvaEventObject<DragEvent>) => {

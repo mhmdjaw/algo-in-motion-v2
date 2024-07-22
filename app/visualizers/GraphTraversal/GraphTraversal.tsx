@@ -20,7 +20,7 @@ export function GraphTraversal({ algorithm }: { algorithm: AlgorithmKey }) {
   const speed = useBoundStore((s) => s.speed)
   const isRunning = useBoundStore((s) => s.isRunning)
   const isPaused = useBoundStore((s) => s.isPaused)
-  const isReset = useBoundStore((s) => s.isReset())
+  const shouldReset = useBoundStore((s) => s.shouldReset())
   const visualizationComplete = useBoundStore((s) => s.visualizationComplete)
 
   const [graph, setGraph] = useState<Graph>({ nodes: [], edges: [] })
@@ -58,7 +58,44 @@ export function GraphTraversal({ algorithm }: { algorithm: AlgorithmKey }) {
   }, [edges, nodes])
   const animationSpeed = useMemo(() => (1 - speed / 100) * 900 + 100, [speed])
 
+  const [animationRun, animationCancel] = useAnimationFrame(
+    ({ complete }) => {
+      const index = animationIndex.current
+
+      const now = Date.now()
+      const elapsed = now - previousTimeStamp.current
+
+      // if enough time has elapsed, draw the next frame
+
+      if (elapsed > animationSpeed) {
+        // Get ready for next frame by setting then=now, but...
+        // Also, adjust for fpsInterval not being multiple of 16.67
+        previousTimeStamp.current = now - (elapsed % animationSpeed)
+
+        // draw stuff here
+
+        const animation = animations.current[index]
+
+        if (algorithm === AlgorithmKey.BFS) {
+          drawBFSAnimation(animation as BFSAnimation, nodeRef.current, edgeRef.current, colors)
+        } else if (algorithm === AlgorithmKey.DFS) {
+          drawDFSAnimation(animation as DFSAnimation, nodeRef.current, edgeRef.current, colors)
+        }
+
+        ++animationIndex.current
+
+        if (animationIndex.current >= animations.current.length) {
+          complete(visualizationComplete)
+        }
+      }
+    },
+    false,
+    [animationSpeed, visualizationComplete, colors]
+  )
+
   const resetGraph = useCallback(() => {
+    animationCancel()
+
     animationIndex.current = 0
 
     initialPositions.current = { nodesPositions: [], edgesPositions: [] }
@@ -106,44 +143,9 @@ export function GraphTraversal({ algorithm }: { algorithm: AlgorithmKey }) {
 
     // set new graph
     setGraph(newGraph)
-  }, [stageHeight, stageWidth, nodes, numberOfEdges])
+  }, [animationCancel, nodes, numberOfEdges, stageWidth, stageHeight])
 
   const debounce = useDebounce(resetGraph, 100, [resetGraph])
-
-  const [animationRun, animationCancel] = useAnimationFrame(
-    ({ complete }) => {
-      const index = animationIndex.current
-
-      const now = Date.now()
-      const elapsed = now - previousTimeStamp.current
-
-      // if enough time has elapsed, draw the next frame
-
-      if (elapsed > animationSpeed) {
-        // Get ready for next frame by setting then=now, but...
-        // Also, adjust for fpsInterval not being multiple of 16.67
-        previousTimeStamp.current = now - (elapsed % animationSpeed)
-
-        // draw stuff here
-
-        const animation = animations.current[index]
-
-        if (algorithm === AlgorithmKey.BFS) {
-          drawBFSAnimation(animation as BFSAnimation, nodeRef.current, edgeRef.current, colors)
-        } else if (algorithm === AlgorithmKey.DFS) {
-          drawDFSAnimation(animation as DFSAnimation, nodeRef.current, edgeRef.current, colors)
-        }
-
-        ++animationIndex.current
-
-        if (animationIndex.current >= animations.current.length) {
-          complete(visualizationComplete)
-        }
-      }
-    },
-    false,
-    [graph, animationSpeed, visualizationComplete, colors]
-  )
 
   const getAnimations = useCallback(() => {
     if (algorithm === AlgorithmKey.BFS) {
@@ -166,10 +168,10 @@ export function GraphTraversal({ algorithm }: { algorithm: AlgorithmKey }) {
   }, [isRunning, animationRun, animationCancel, isPaused, getAnimations])
 
   useEffect(() => {
-    if (isReset) {
+    if (shouldReset) {
       debounce()
     }
-  }, [isReset, resetGraph, debounce])
+  }, [shouldReset, resetGraph, debounce])
 
   const onDragMove = useCallback(
     (e: KonvaEventObject<DragEvent>) => {

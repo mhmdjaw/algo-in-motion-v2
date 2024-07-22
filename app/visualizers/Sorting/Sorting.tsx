@@ -21,7 +21,7 @@ export function Sorting({ algorithm }: { algorithm: AlgorithmKey }) {
   const speed = useBoundStore((s) => s.speed)
   const isRunning = useBoundStore((s) => s.isRunning)
   const isPaused = useBoundStore((s) => s.isPaused)
-  const isReset = useBoundStore((s) => s.isReset())
+  const shouldReset = useBoundStore((s) => s.shouldReset())
   const visualizationComplete = useBoundStore((s) => s.visualizationComplete)
 
   const [array, setArray] = useState<ArrayNumber[]>([])
@@ -42,32 +42,16 @@ export function Sorting({ algorithm }: { algorithm: AlgorithmKey }) {
     [theme.colors.blue, theme.colors.pink]
   )
 
+  // width per bar
+  const width = useMemo(() => {
+    // total widths of all bars combined (so we can adjust the space between them depending on the size)
+    const totalBarWidths = 90 - ((90 - 50) / 306) * (size - 4)
+    // return width per bar
+    return totalBarWidths / size
+  }, [size])
+
   // FPS interval (converted to ms)
   const animationSpeed = useMemo(() => (1 - speed / 100) * (16 + (310 - size)) + 5, [size, speed])
-
-  // total widths of all bars combined (so we can adjust the space between them depending on the size)
-  const totalBarWidths = 90 - ((90 - 50) / 306) * (size - 4)
-  // width per bar
-  const width = totalBarWidths / size
-
-  const resetArray = useCallback(() => {
-    animationIndex.current = 0
-
-    const newArray: ArrayNumber[] = []
-
-    // generate values
-    for (let i = 0; i < size; i++) {
-      newArray.push({
-        id: uuidv4(),
-        value: (randomNumberInterval(4, 200) / 200) * 100
-      })
-    }
-
-    // initialize refs array
-    barsRef.current = new Array(newArray.length)
-
-    setArray(newArray)
-  }, [size])
 
   const [animationRun, animationCancel] = useAnimationFrame(
     ({ complete }) => {
@@ -101,8 +85,29 @@ export function Sorting({ algorithm }: { algorithm: AlgorithmKey }) {
       }
     },
     false,
-    [array, animationSpeed, visualizationComplete, colors]
+    [animationSpeed, visualizationComplete, colors]
   )
+
+  const resetArray = useCallback(() => {
+    animationCancel()
+
+    animationIndex.current = 0
+
+    const newArray: ArrayNumber[] = []
+
+    // generate values
+    for (let i = 0; i < size; i++) {
+      newArray.push({
+        id: uuidv4(),
+        value: (randomNumberInterval(4, 200) / 200) * 100
+      })
+    }
+
+    // initialize refs array
+    barsRef.current = new Array(newArray.length)
+
+    setArray(newArray)
+  }, [animationCancel, size])
 
   const getAnimations = useCallback(() => {
     if (algorithm === AlgorithmKey.QuickSort) {
@@ -125,8 +130,8 @@ export function Sorting({ algorithm }: { algorithm: AlgorithmKey }) {
   }, [isRunning, isPaused, animationRun, animationCancel, getAnimations])
 
   useLayoutEffect(() => {
-    if (isReset) resetArray()
-  }, [isReset, resetArray])
+    if (shouldReset) resetArray()
+  }, [shouldReset, resetArray])
 
   return (
     <div className={styles.container}>

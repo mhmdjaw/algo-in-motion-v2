@@ -14,7 +14,7 @@ export interface VisualizerSlice {
   isPaused: boolean
   isGenerating: boolean
   isComplete: boolean
-  isReset: () => boolean
+  shouldReset: () => boolean
   runVisualizer: () => void
   pauseVisualizer: () => void
   resetVisualizer: () => void
@@ -38,6 +38,7 @@ export const createVisualizerSlice: StateCreator<
     visualizationComplete: () => set({ isRunning: false, isComplete: true, isPaused: false }),
     generateVisualizer: () => set({ isGenerating: true, isPaused: false }),
     generationComplete: () => set({ isGenerating: false, isPaused: false }),
-    isReset: () => !(get().isRunning || get().isPaused || get().isGenerating || get().isComplete)
+    shouldReset: () =>
+      !(get().isRunning || get().isPaused || get().isGenerating || get().isComplete)
   }
 }

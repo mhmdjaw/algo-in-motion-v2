@@ -1,5 +1,5 @@
 import { Box, useMantineTheme } from '@mantine/core'
-import { useDebounce } from '@mhmdjawhar/react-hooks'
+import { useAnimationFrame } from '@mhmdjawhar/react-hooks'
 import type Konva from 'konva'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Stage, Layer, Line } from 'react-konva'
@@ -9,19 +9,12 @@ import { getGradientColor } from '~/helpers'
 import { useStageDimensions } from '~/hooks'
 import { useBoundStore } from '~/store'
 
-const getPosition = (index: number, delta: number, height: number, width: number) => {
-  const angle = index * delta
-  const radius = (0.9 * Math.min(height, width)) / 2
-  const xpos = radius * Math.cos(angle)
-  const ypos = radius * Math.sin(angle)
-  return { x: xpos, y: ypos }
-}
-
 export function TimesTables() {
   const pointsCount = useBoundStore((s) => s.points)
   const speed = useBoundStore((s) => s.speed)
   const isRunning = useBoundStore((s) => s.isRunning)
-  const isReset = useBoundStore((s) => s.isReset())
+  const isPaused = useBoundStore((s) => s.isPaused)
+  const shouldReset = useBoundStore((s) => s.shouldReset())
   const visualizationComplete = useBoundStore((s) => s.visualizationComplete)
 
   const [points, setPoints] = useState<string[]>([])
@@ -34,8 +27,8 @@ export function TimesTables() {
   const gradientColors = useRef<string[]>([])
 
   // animation related refs
-  const timeoutsChunks = useRef<Array<NodeJS.Timeout>>([])
-  const timeouts = useRef<Array<NodeJS.Timeout>>([])
+  const factor = useRef<number>(0)
+  const previousTimeStamp = useRef(Date.now())
 
   const theme = useMantineTheme()
   const colors = useMemo(
@@ -49,25 +42,64 @@ export function TimesTables() {
   const { stageWidth, stageHeight } = useStageDimensions()
 
   const delta = useMemo(() => (2 * Math.PI) / pointsCount, [pointsCount])
-  const animationSpeed = useMemo(() => (1 - speed / 100) * 490 + 10, [speed])
+  const animationSpeed = useMemo(() => (1 - speed / 100) * 490 + 8, [speed])
+
+  const [animationRun, animationCancel] = useAnimationFrame(
+    () => {
+      const now = Date.now()
+      const elapsed = now - previousTimeStamp.current
+
+      // if enough time has elapsed, draw the next frame
+
+      if (elapsed > animationSpeed) {
+        // Get ready for next frame by setting then=now, but...
+        // Also, adjust for fpsInterval not being multiple of 16.67
+        previousTimeStamp.current = now - (elapsed % animationSpeed)
+
+        // draw stuff here
+
+        factor.current += 0.01
+
+        for (let i = 0; i < pointsCount; i++) {
+          const currentLine = lineRef.current[i]
+          // get new from position (in case stage width changes)
+          const fromPosition = getPosition(i, delta, stageHeight, stageWidth)
+          // get new to position
+          const toPosition = getPosition(
+            (factor.current * i) % pointsCount,
+            delta,
+            stageHeight,
+            stageWidth
+          )
+          if (currentLine) {
+            currentLine.points([fromPosition.x, fromPosition.y, toPosition.x, toPosition.y])
+          }
+        }
+      }
+    },
+    false,
+    [animationSpeed, visualizationComplete, pointsCount, delta, stageHeight, stageWidth]
+  )
 
   const resetTimesTables = useCallback(() => {
-    timeoutsChunks.current.map((timeout) => clearTimeout(timeout))
-    timeouts.current.map((timeout) => clearTimeout(timeout))
-    lineRef.current = Array(pointsCount)
+    animationCancel()
 
-    const newPoints: string[] = []
+    factor.current = 0
+
+    lineRef.current = Array(pointsCount)
     positions.current = []
     gradientColors.current = []
-    const initialFactor = 0
+
+    const newPoints: string[] = []
+
     for (let i = 0; i < pointsCount; i++) {
       // initialize
       newPoints.push(uuidv4())
 
       // set initial position
       const initialFromPosition = getPosition(i, delta, stageHeight, stageWidth)
-      const initialToPosision = getPosition(
-        (i * initialFactor) % pointsCount,
+      const initialToPosition = getPosition(
+        (i * factor.current) % pointsCount,
         delta,
         stageHeight,
         stageWidth
@@ -75,8 +107,8 @@ export function TimesTables() {
       positions.current.push([
         initialFromPosition.x,
         initialFromPosition.y,
-        initialToPosision.x,
-        initialToPosision.y
+        initialToPosition.x,
+        initialToPosition.y
       ])
 
       // generate colors for each line
@@ -85,65 +117,20 @@ export function TimesTables() {
     }
 
     setPoints(newPoints)
-  }, [pointsCount, delta, stageHeight, stageWidth, colors.PINK, colors.BLUE])
-
-  const debounce = useDebounce(resetTimesTables, 100, [resetTimesTables])
-
-  const timesTablesRun = useCallback(() => {
-    timeoutsChunks.current = new Array(120)
-    timeouts.current = new Array(1000)
-    for (let t = 0; t < 1; t++) {
-      timeoutsChunks.current[t] = setTimeout(
-        () => {
-          let i = 0
-          timeouts.current = new Array(1000)
-          for (let factor = t * 10; factor < (t + 1) * 10; factor += 0.01) {
-            timeouts.current[i++] = setTimeout(
-              () => {
-                for (let j = 0; j < pointsCount; j++) {
-                  const currentLine = lineRef.current[j]
-                  const currentLinePoints = currentLine?.points()
-                  const position = getPosition(
-                    (factor * j) % pointsCount,
-                    delta,
-                    stageHeight,
-                    stageWidth
-                  )
-                  if (currentLine && currentLinePoints) {
-                    currentLine.points([
-                      currentLinePoints[0],
-                      currentLinePoints[1],
-                      position.x,
-                      position.y
-                    ])
-                  }
-                }
-              },
-              (factor - t * 10) * 100 * animationSpeed
-            )
-          }
-        },
-        t * 10 * 100 * animationSpeed
-      )
-    }
-
-    timeoutsChunks.current[121] = setTimeout(
-      () => {
-        visualizationComplete()
-      },
-      1 * 10 * 100 * animationSpeed
-    )
-  }, [animationSpeed, pointsCount, delta, stageHeight, stageWidth, points, visualizationComplete])
+  }, [animationCancel, pointsCount, delta, stageHeight, stageWidth, colors.PINK, colors.BLUE])
 
   useEffect(() => {
     if (isRunning) {
-      timesTablesRun()
+      previousTimeStamp.current = Date.now()
+      animationRun()
+    } else if (isPaused) {
+      animationCancel()
     }
-  }, [isRunning, timesTablesRun])
+  }, [isRunning, animationRun, animationCancel, isPaused])
 
   useEffect(() => {
-    if (isReset) debounce()
-  }, [debounce, isReset])
+    if (shouldReset) resetTimesTables()
+  }, [resetTimesTables, shouldReset])
 
   return (
     <Box h={stageHeight} w={stageWidth} mx="auto">
@@ -166,4 +153,12 @@ export function TimesTables() {
       </Stage>
     </Box>
   )
+}
+
+const getPosition = (index: number, delta: number, height: number, width: number) => {
+  const angle = index * delta
+  const radius = (0.9 * Math.min(height, width)) / 2
+  const xpos = radius * Math.cos(angle)
+  const ypos = radius * Math.sin(angle)
+  return { x: xpos, y: ypos }
 }
