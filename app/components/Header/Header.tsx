@@ -55,29 +55,22 @@ function AlgorithmsMenu({ isMobile }: { isMobile?: boolean }) {
 function Actions({ isMobile }: { isMobile?: boolean }) {
   const isComplete = useBoundStore((s) => s.isComplete)
   const isRunning = useBoundStore((s) => s.isRunning)
-  const isGenerating = useBoundStore((s) => s.isGenerating)
   const shouldReset = useBoundStore((s) => s.shouldReset())
 
   const resetVisualizer = useBoundStore((s) => s.resetVisualizer)
   const runVisualizer = useBoundStore((s) => s.runVisualizer)
   const pauseVisualizer = useBoundStore((s) => s.pauseVisualizer)
-  const generateVisualizer = useBoundStore((s) => s.generateVisualizer)
 
-  const isPlaying = isRunning || isGenerating
-  const ActionIcon = isPlaying ? FaPause : FaPlay
-  const actionText = isPlaying ? 'Pause' : 'Play'
+  const ActionIcon = isRunning ? FaPause : FaPlay
+  const actionText = isRunning ? 'Pause' : 'Play'
 
   const handleAction = useCallback(() => {
-    if (isPlaying || isGenerating) {
+    if (isRunning) {
       pauseVisualizer()
     } else {
-      if (isGenerating) {
-        generateVisualizer()
-      } else {
-        runVisualizer()
-      }
+      runVisualizer()
     }
-  }, [generateVisualizer, isGenerating, isPlaying, pauseVisualizer, runVisualizer])
+  }, [isRunning, pauseVisualizer, runVisualizer])
 
   const windowListener = useCallback(
     (event: KeyboardEvent) => {

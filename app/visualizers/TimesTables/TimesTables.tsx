@@ -1,7 +1,7 @@
 import { Box, useMantineTheme } from '@mantine/core'
 import { useAnimationFrame } from '@mhmdjawhar/react-hooks'
 import type Konva from 'konva'
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { Stage, Layer, Line } from 'react-konva'
 import { v4 as uuidv4 } from 'uuid'
 import type { LinePosition } from '~/algorithms/interfaces'
@@ -128,7 +128,7 @@ export function TimesTables() {
     }
   }, [isRunning, animationRun, animationCancel, isPaused])
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (shouldReset) resetTimesTables()
   }, [resetTimesTables, shouldReset])
 

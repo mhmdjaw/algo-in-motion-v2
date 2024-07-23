@@ -1,0 +1,12 @@
+.grid {
+  display: grid;
+  justify-content: center;
+  align-content: center;
+  margin: 0 auto;
+  background-color: var(--mantine-color-black);
+  border: rem(1) solid var(--mantine-border-color);
+}
+
+.cell {
+  background-color: #000;
+}

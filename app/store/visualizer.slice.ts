@@ -5,21 +5,21 @@ import type { OptionsSlice } from './options.slice'
 const initialVisualizerState = {
   isRunning: false,
   isPaused: false,
-  isGenerating: false,
-  isComplete: false
+  isComplete: false,
+  isGenerationComplete: false
 }
 
 export interface VisualizerSlice {
   isRunning: boolean
   isPaused: boolean
-  isGenerating: boolean
   isComplete: boolean
+  isGenerationComplete: boolean
   shouldReset: () => boolean
   runVisualizer: () => void
   pauseVisualizer: () => void
   resetVisualizer: () => void
   visualizationComplete: () => void
-  generateVisualizer: () => void
+  generationComplete: () => void
 }
 
 export const createVisualizerSlice: StateCreator<
@@ -34,11 +34,16 @@ export const createVisualizerSlice: StateCreator<
     runVisualizer: () => set({ isRunning: true, isPaused: false }),
     pauseVisualizer: () => set({ isRunning: false, isPaused: true }),
     resetVisualizer: () =>
-      set({ isRunning: false, isComplete: false, isPaused: false, isGenerating: false }),
+      set({
+        isRunning: false,
+        isComplete: false,
+        isGenerationComplete: false,
+        isPaused: false
+      }),
     visualizationComplete: () => set({ isRunning: false, isComplete: true, isPaused: false }),
-    generateVisualizer: () => set({ isGenerating: true, isPaused: false }),
-    generationComplete: () => set({ isGenerating: false, isPaused: false }),
+    generationComplete: () =>
+      set({ isRunning: false, isGenerationComplete: true, isPaused: false }),
     shouldReset: () =>
-      !(get().isRunning || get().isPaused || get().isGenerating || get().isComplete)
+      !(get().isRunning || get().isPaused || get().isComplete || get().isGenerationComplete)
   }
 }

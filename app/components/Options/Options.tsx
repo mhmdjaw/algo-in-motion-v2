@@ -28,7 +28,6 @@ export function Options() {
   const changeOption = useBoundStore((s) => s.changeOption)
   const resetVisualizer = useBoundStore((s) => s.resetVisualizer)
   const isRunning = useBoundStore((s) => s.isRunning)
-  const isGenerating = useBoundStore((s) => s.isGenerating)
 
   const speed = useBoundStore((s) => s.speed)
   const size = useBoundStore((s) => s.size)
@@ -108,12 +107,7 @@ export function Options() {
       )}
       <Stack className={styles.optionContainer}>
         <Text className={styles.label}>Speed</Text>
-        <Slider
-          w="100%"
-          value={speed}
-          onChange={changeOption('speed')}
-          disabled={isRunning || isGenerating}
-        />
+        <Slider w="100%" value={speed} onChange={changeOption('speed')} disabled={isRunning} />
       </Stack>
     </div>
   )
