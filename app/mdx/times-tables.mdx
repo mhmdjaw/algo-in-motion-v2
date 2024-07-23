@@ -1,0 +1,31 @@
+import { Content } from '~/components'
+
+<Content title="Wondering What That is?">
+
+**So what's really behind this captivating animation?**
+
+What you're witnessing here is the artistic side of **mathematics**. This animation is not really driven
+by a complex **algorithm**, but rather math. The concept behind it is quite intriguing, yet not so
+complex and is what makes it so remarkable.
+
+The concept is quite simple. Several points are equally spaced on a circle. Each point has an
+index ranging from `0` to `N-1`. Each point connects with a straight line to another position
+on the circle. That position is determined based on the point's index, multiplied by a certain
+**factor**. For example, if the **factor** is `2`: point `1` connects to `2`, point `3` to `6`,
+point `4` to `8`, and so on. If the destination position of the point exceeds `N`, the `modulo[%]`
+operator is used to keep it within the boundary of available positions on the circle.
+
+That's all there is to it! The animation is then created by varying the factor. Each frame represents
+a different factor, starting from `0` and increasing by `0.01`. This results in a stunning and
+endless animation. If you watch it long enough, you'll notice all sorts of crazy patterns
+emerging. All it takes is straight lines shifting positions using basic math to produce this effect.
+Just increase the number of points and the animation speed to max, and enjoy the wonders of math in motion.
+
+**NOTE:** Be aware though that depending on the performance of your device, choosing a high number of points
+may result in slower/skipped frames and the browser may not be able to paint at the speed chosen (FPS is
+capped at 125 for this specific visualization at max speed).
+
+**P.S:** The actual tricky part while building this was calculating the positions of points and destination
+points using trigonometry. It brought up my school PTSD again👍. Fun times!
+
+</Content>
