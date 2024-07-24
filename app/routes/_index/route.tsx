@@ -2,7 +2,7 @@ import type { MetaFunction } from '@remix-run/node'
 import styles from './_index.module.css'
 import * as variants from './_index.variants'
 import { Logo } from '~/assets/svg'
-import { motion } from 'framer-motion'
+import { LazyMotion, m, domAnimation } from 'framer-motion'
 import { Button, Stack, Title, useMantineTheme } from '@mantine/core'
 import { useMediaQuery } from '@mhmdjawhar/react-hooks'
 import { Link } from '@remix-run/react'
@@ -17,8 +17,10 @@ export const meta: MetaFunction = () => {
 export default function Landing() {
   return (
     <main className={styles.main}>
-      <LogoSection />
-      <ContentSection />
+      <LazyMotion strict features={domAnimation}>
+        <LogoSection />
+        <ContentSection />
+      </LazyMotion>
     </main>
   )
 }
@@ -28,22 +30,22 @@ function LogoSection() {
   const isMobile = useMediaQuery(`(max-width: ${theme.breakpoints.sm})`)
 
   return (
-    <motion.div
+    <m.div
       className={styles.logoContainer}
       variants={isMobile ? variants.svgContainerMobile : variants.svgContainer}
       initial="hidden"
       animate="visible"
     >
       <Logo width="100%" variants={variants.logoPath} />
-    </motion.div>
+    </m.div>
   )
 }
 
-const MotionTitle = motion(Title)
+const MotionTitle = m(Title)
 
 function ContentSection() {
   return (
-    <motion.div initial="hidden" animate="visible" className={styles.contentContainer}>
+    <m.div initial="hidden" animate="visible" className={styles.contentContainer}>
       <Stack mb="xl" gap={0}>
         <div className={styles.titleContainer}>
           <MotionTitle order={1} variants={variants.title} custom={0}>
@@ -62,7 +64,7 @@ function ContentSection() {
           </MotionTitle>
         </div>
       </Stack>
-      <motion.div className={styles.buttonContainer} variants={variants.button}>
+      <m.div className={styles.buttonContainer} variants={variants.button}>
         <Button
           component={Link}
           to="/algorithms/quick-sort"
@@ -72,7 +74,7 @@ function ContentSection() {
         >
           Start
         </Button>
-      </motion.div>
-    </motion.div>
+      </m.div>
+    </m.div>
   )
 }

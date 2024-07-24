@@ -15,6 +15,7 @@ import {
 } from '@remix-run/react'
 import { ColorSchemeScript, MantineProvider } from '@mantine/core'
 import theme, { resolver } from './theme'
+import { ErrorLayout } from './components'
 
 export const links: LinksFunction = () => {
   return [
@@ -74,26 +75,12 @@ export function ErrorBoundary() {
   }
 
   if (errorStatus === 404) {
-    errorMessage = "Sorry, the page you're looking for does not exist."
+    errorMessage = "Looks like you're lost. Here's a way back home!"
   } else {
     errorMessage = 'Something went Wrong... please refresh the page or try again later.'
   }
 
-  return (
-    <>
-      <div className="route-error">
-        <h1>Oops</h1>
-        <h2>{errorStatus}</h2>
-        {errorMessage && (
-          <fieldset>
-            <pre>{errorMessage}</pre>
-          </fieldset>
-        )}
-      </div>
-      {/* <ErrorLayout message={errorMessage} /> */}
-      <p>{errorMessage}</p>
-    </>
-  )
+  return <ErrorLayout message={errorMessage} />
 }
 
 export function HydrateFallback() {

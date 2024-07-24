@@ -22,20 +22,20 @@ export function Footer() {
               <Group className={styles.buttons}>
                 <Button
                   component="a"
+                  href="https://github.com/mhmdjaw/algo-in-motion-v2"
                   variant="retro-primary"
                   size="lg"
                   leftSection={<VscGithubInverted />}
-                  href="https://github.com/mhmdjaw/algo-in-motion-v2"
                 >
                   GitHub
                 </Button>
                 <Button
                   component="a"
+                  href="https://mhmdjaw.github.io/algo-in-motion"
                   variant="retro-primary"
                   size="lg"
                   color="blue"
                   leftSection={<FaClockRotateLeft />}
-                  href="https://mhmdjaw.github.io/algo-in-motion"
                 >
                   Old Version
                 </Button>
