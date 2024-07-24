@@ -171,7 +171,7 @@ export function GraphTraversal({ algorithm }: { algorithm: AlgorithmKey }) {
     if (shouldReset) {
       debounce()
     }
-  }, [shouldReset, resetGraph, debounce])
+  }, [shouldReset, debounce])
 
   const onDragMove = useCallback(
     (e: KonvaEventObject<DragEvent>) => {

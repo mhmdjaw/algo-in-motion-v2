@@ -1,10 +1,11 @@
 import { useMantineTheme } from '@mantine/core'
-import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 import { mazeGeneration, pathfinding } from '~/algorithms'
 import { useStageDimensions } from '~/hooks'
 import { useBoundStore } from '~/store'
 import styles from './Pathfinding.module.css'
+import { useDebounce } from '@mhmdjawhar/react-hooks'
 
 export function Pathfinding() {
   const speed = useBoundStore((s) => s.speed)
@@ -44,41 +45,6 @@ export function Pathfinding() {
   const width = useMemo(() => Math.min(stageWidth || 0.95 * window.innerWidth, 1200), [stageWidth])
 
   const animationSpeed = useMemo(() => (1 - speed / 100) * 195 + 5, [speed])
-
-  const resetMaze = useCallback(() => {
-    timeoutsChunks.current.map((timeout) => clearTimeout(timeout))
-    timeouts.current.map((timeout) => clearTimeout(timeout))
-
-    // calculate number of rows and columns
-    let rows =
-      stageHeight < width
-        ? Math.floor((stageHeight / width) * 103)
-        : Math.floor((width / stageHeight) * 103)
-    rows = rows % 2 === 0 ? rows - 1 : rows
-    cellSize.current = stageHeight / rows
-    let cols = Math.floor(width / cellSize.current)
-    cols = cols % 2 === 0 ? cols - 1 : cols
-    rows -= 2
-    cols -= 2
-    mazeSize.current.rows = rows
-    mazeSize.current.cols = cols
-
-    const newMaze: string[][] = new Array(rows)
-
-    for (let i = 0; i < rows; i++) {
-      newMaze[i] = new Array(cols)
-      for (let j = 0; j < cols; j++) {
-        newMaze[i][j] = uuidv4()
-      }
-    }
-
-    mazeRef.current = new Array(cols)
-    for (let i = 0; i < rows; i++) {
-      mazeRef.current[i] = new Array(cols)
-    }
-
-    setMaze(newMaze)
-  }, [stageHeight, width])
 
   const generateMaze = useCallback(() => {
     const mazeColors: number[][] = new Array(mazeSize.current.rows)
@@ -235,6 +201,43 @@ export function Pathfinding() {
     )
   }, [animationSpeed, colors.BLUE, colors.PINK, visualizationComplete])
 
+  const resetMaze = useCallback(() => {
+    timeoutsChunks.current.map((timeout) => clearTimeout(timeout))
+    timeouts.current.map((timeout) => clearTimeout(timeout))
+
+    // calculate number of rows and columns
+    let rows =
+      stageHeight < width
+        ? Math.floor((stageHeight / width) * 103)
+        : Math.floor((width / stageHeight) * 103)
+    rows = rows % 2 === 0 ? rows - 1 : rows
+    cellSize.current = stageHeight / rows
+    let cols = Math.floor(width / cellSize.current)
+    cols = cols % 2 === 0 ? cols - 1 : cols
+    rows -= 2
+    cols -= 2
+    mazeSize.current.rows = rows
+    mazeSize.current.cols = cols
+
+    const newMaze: string[][] = new Array(rows)
+
+    for (let i = 0; i < rows; i++) {
+      newMaze[i] = new Array(cols)
+      for (let j = 0; j < cols; j++) {
+        newMaze[i][j] = uuidv4()
+      }
+    }
+
+    mazeRef.current = new Array(cols)
+    for (let i = 0; i < rows; i++) {
+      mazeRef.current[i] = new Array(cols)
+    }
+
+    setMaze(newMaze)
+  }, [stageHeight, width])
+
+  const debounce = useDebounce(resetMaze, 100, [resetMaze])
+
   useEffect(() => {
     if (isRunning && !isGenerationcomplete) {
       generateMaze()
@@ -243,9 +246,9 @@ export function Pathfinding() {
     }
   }, [pathfindingRun, isRunning, isGenerationcomplete, generateMaze])
 
-  useLayoutEffect(() => {
-    if (shouldReset) resetMaze()
-  }, [resetMaze, shouldReset])
+  useEffect(() => {
+    if (shouldReset) debounce()
+  }, [debounce, resetMaze, shouldReset])
 
   return (
     <div
