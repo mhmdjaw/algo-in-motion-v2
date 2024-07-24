@@ -7,5 +7,5 @@ export const ALGORITHM_NAME = {
   [AlgorithmKey.DFS]: 'DFS',
   [AlgorithmKey.TimesTables]: 'Times Tables',
   [AlgorithmKey.TravelingSalesman]: 'Traveling Salesman',
-  [AlgorithmKey.Pathfinding]: 'Pathfinding'
+  [AlgorithmKey.Pathfinding]: 'A* Pathfinding'
 }

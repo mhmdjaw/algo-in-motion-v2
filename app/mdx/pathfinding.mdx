@@ -1,0 +1,57 @@
+import { Content } from '~/components'
+import { ColorSwatch, Group, Text, Stack } from '@mantine/core'
+
+<Content title="Legends">
+  <Stack>
+    <Group>
+      <ColorSwatch color="lime" />
+      <Text size="lg" fw={600}>
+        <span>Starting cell</span>
+      </Text>
+    </Group>
+    <Group>
+      <ColorSwatch color="red" />
+      <Text size="lg" fw={600}>
+        <span>Target cell</span>
+      </Text>
+    </Group>
+    <Group>
+      <ColorSwatch color="var(--mantine-primary-color-7)" />
+      <Text size="lg" fw={600}>
+        <span>Searched area so far</span>
+      </Text>
+    </Group>
+    <Group>
+      <ColorSwatch color="var(--mantine-color-blue-6)" />
+      <Text size="lg" fw={600}>
+        <span>Path found</span>
+      </Text>
+    </Group>
+  </Stack>
+</Content>
+
+<Content title="Explanation">
+
+For the maze generation, there are quite a few available algorithms out there
+(and they are all as fun to watch). In this particular visualizer, the **randomized
+breadth-first** search is used. It keeps an array of all the current possible cells
+the maze can currently expand into and randomly chooses one of them as long as the cell is
+available (not a white cell yet).
+
+A\* pathfinding is one of the most efficient pathfinding algorithms and the best
+solution in many cases. You can find its uses in maps, games, and many other use cases.
+
+The secret of its success is driven by its ability to cleverly search for the target
+by using **heuristics**. Meaning it tries to guess the distance from the current cell
+to the target. The guess is always underestimated assuming there are no obstacles on
+the way. The current total cost is then calculated for the cell using the formula
+`F = G + H` which is the core equation of the algorithm. `G` is the current cost from the
+starting cell to the current cell, `H` is the estimated cost of the cell, and `F` is the
+total cost. `H` is based on a formula we apply depending on the nature of the graph.
+In the case of this maze, since it's basically a grid and we're only allowed to move
+in four directions, we can use the Manhattan distance `H = | Xa - Xb | + | Ya - Yb |`
+where `a` is the current cell and `b` is the target. Each step, we pick the cell with the
+lowest `F`, expand into it, and calculate the `F` of its available children. The process
+is then repeated until the target is found.
+
+</Content>
