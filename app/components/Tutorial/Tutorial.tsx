@@ -1,10 +1,13 @@
 import { Carousel } from '@mantine/carousel'
-import { Button, FocusTrap, Modal, Text } from '@mantine/core'
+import { Button, FocusTrap, Modal, Text, useMantineTheme } from '@mantine/core'
 import styles from './Tutorial.module.css'
-import { useDisclosure } from '@mhmdjawhar/react-hooks'
+import { useDisclosure, useMediaQuery } from '@mhmdjawhar/react-hooks'
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa6'
 
 export function Tutorial() {
+  const theme = useMantineTheme()
+  const isMobile = useMediaQuery(`(max-width: ${theme.breakpoints.md})`)
+
   const [opened, { close }] = useDisclosure(true)
 
   return (
@@ -19,8 +22,10 @@ export function Tutorial() {
         body: styles.modalBody,
         inner: styles.modalInner
       }}
+      closeOnClickOutside={false}
       centered
       lockScroll={false}
+      fullScreen={isMobile}
     >
       <FocusTrap.InitialFocus />
       <Carousel
@@ -49,7 +54,9 @@ export function Tutorial() {
           </div>
           <div className={styles.slideContent}>
             <Text className={styles.slideTitle}>Welcome!</Text>
-            <Text>Feel free to skip the tutorial by clicking the button below.</Text>
+            <Text className={styles.slideText}>
+              Feel free to skip the tutorial by clicking the button below.
+            </Text>
           </div>
         </Carousel.Slide>
         <Carousel.Slide>
@@ -62,9 +69,9 @@ export function Tutorial() {
           </div>
           <div className={styles.slideContent}>
             <Text className={styles.slideTitle}>Welcome!</Text>
-            <Text>
+            <Text className={styles.slideText}>
               Choose your algorithm from the menu list. Use the action button to run the visualizer
-              or reset it. Each visualizer has a set of options you can control.
+              or reset it.
             </Text>
           </div>
         </Carousel.Slide>
@@ -78,13 +85,15 @@ export function Tutorial() {
           </div>
           <div className={styles.slideContent}>
             <Text className={styles.slideTitle}>Welcome!</Text>
-            <Text>Feel free to skip the tutorial by clicking the button below.</Text>
+            <Text className={styles.slideText}>
+              Feel free to skip the tutorial by clicking the button below.
+            </Text>
           </div>
         </Carousel.Slide>
       </Carousel>
       <div className={styles.buttonContainer}>
         <Button variant="retro-secondary" size="sm" onClick={close}>
-          Skip Tutorial
+          Close Tutorial
         </Button>
       </div>
     </Modal>

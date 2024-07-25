@@ -5,10 +5,15 @@
 
 .modalContent {
   overflow-y: visible;
-  height: rem(650);
   text-align: center;
   border-radius: var(--mantine-radius-lg);
+  background-color: var(--mantine-color-dark-6);
+  height: rem(650);
   max-height: calc(100dvh - (var(--modal-y-offset) * 2) - rem(40));
+  @mixin smaller-than $mantine-breakpoint-md {
+    height: var(--modal-content-height);
+    max-height: var(--modal-content-max-height);
+  }
 }
 
 .modalBody {
@@ -18,6 +23,9 @@
 .modalInner {
   padding-bottom: calc(var(--modal-y-offset) + rem(40));
   padding-inline: calc(var(--modal-x-offset) + rem(100));
+  @mixin smaller-than $mantine-breakpoint-md {
+    padding: 0;
+  }
 }
 
 .carouselRoot {
@@ -51,6 +59,9 @@
 
 .carouselIndicators {
   bottom: calc((var(--button-container-height) + rem(32)) * -1);
+  @mixin smaller-than $mantine-breakpoint-md {
+    bottom: calc((var(--button-container-height) - rem(16)) * -1);
+  }
 }
 
 .carouselSlide {
@@ -63,7 +74,7 @@
 .slideMedia {
   height: calc(100% - var(--slide-content));
   background-color: var(--mantine-color-dark-8);
-  padding: rem(24);
+  padding: rem(40);
   width: 100%;
 }
 
@@ -82,7 +93,17 @@
   padding-bottom: rem(8);
 }
 
+.slideText {
+  font-size: var(--mantine-font-size-md);
+  @mixin smaller-than $mantine-breakpoint-md {
+    font-size: var(--mantine-font-size-sm);
+  }
+}
+
 .buttonContainer {
   min-height: var(--button-container-height);
   padding-top: rem(16);
+  @mixin smaller-than $mantine-breakpoint-md {
+    padding-top: rem(8);
+  }
 }
