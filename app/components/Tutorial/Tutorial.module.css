@@ -43,6 +43,9 @@
   height: 100%;
   border-top-left-radius: var(--mantine-radius-lg);
   border-top-right-radius: var(--mantine-radius-lg);
+  @mixin smaller-than $mantine-breakpoint-md {
+    border-radius: 0;
+  }
 }
 
 .carouselContainer {
