@@ -1,0 +1,88 @@
+:root {
+  --button-container-height: rem(90);
+  --slide-content: rem(136);
+}
+
+.modalContent {
+  overflow-y: visible;
+  height: rem(650);
+  text-align: center;
+  border-radius: var(--mantine-radius-lg);
+  max-height: calc(100dvh - (var(--modal-y-offset) * 2) - rem(40));
+}
+
+.modalBody {
+  height: 100%;
+}
+
+.modalInner {
+  padding-bottom: calc(var(--modal-y-offset) + rem(40));
+  padding-inline: calc(var(--modal-x-offset) + rem(100));
+}
+
+.carouselRoot {
+  height: calc(100% - var(--button-container-height));
+}
+
+.carouselViewport {
+  height: 100%;
+  border-top-left-radius: var(--mantine-radius-lg);
+  border-top-right-radius: var(--mantine-radius-lg);
+}
+
+.carouselContainer {
+  height: 100%;
+}
+
+.carouselControls {
+  inset-inline-start: unset;
+  inset-inline-end: unset;
+  left: rem(-100);
+  right: rem(-100);
+  top: calc(50% - (var(--carousel-control-size) / 2) + (var(--button-container-height) / 2));
+}
+
+.carouselControl {
+  &[data-inactive] {
+    opacity: 0;
+    cursor: default;
+  }
+}
+
+.carouselIndicators {
+  bottom: calc((var(--button-container-height) + rem(32)) * -1);
+}
+
+.carouselSlide {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.slideMedia {
+  height: calc(100% - var(--slide-content));
+  background-color: var(--mantine-color-dark-8);
+  padding: rem(24);
+  width: 100%;
+}
+
+.slideContent {
+  display: flex;
+  min-height: var(--slide-content);
+  justify-content: center;
+  align-content: center;
+  flex-direction: column;
+  padding: 0 rem(24);
+}
+
+.slideTitle {
+  font-weight: var(--mantine-fw-b);
+  font-size: rem(24);
+  padding-bottom: rem(8);
+}
+
+.buttonContainer {
+  min-height: var(--button-container-height);
+  padding-top: rem(16);
+}

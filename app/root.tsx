@@ -2,6 +2,7 @@
 import './styles/normalize.css'
 import './styles/app.css'
 import '@mantine/core/styles.css'
+import '@mantine/carousel/styles.css'
 
 import type { LinksFunction } from '@remix-run/node'
 import {

@@ -6,7 +6,7 @@ import {
   useLoaderData,
   type ShouldRevalidateFunctionArgs
 } from '@remix-run/react'
-import { Footer, Header, Options } from '~/components'
+import { Footer, Header, Options, Tutorial } from '~/components'
 import styles from './algorithms.module.css'
 import { Fragment, Suspense, type PropsWithChildren } from 'react'
 import type { LoaderFunctionArgs } from '@remix-run/node'
@@ -26,6 +26,7 @@ export default function AlgorithmsLayout() {
     <>
       <Header />
       <main>
+        <Tutorial />
         <Options />
         <Outlet />
         <Info>
