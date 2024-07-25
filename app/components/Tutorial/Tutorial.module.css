@@ -19,6 +19,7 @@
     width: auto;
     height: var(--modal-content-height);
     max-height: var(--modal-content-max-height);
+    border-radius: 0;
   }
 }
 

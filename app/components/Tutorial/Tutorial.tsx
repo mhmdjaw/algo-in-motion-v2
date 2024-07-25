@@ -31,7 +31,7 @@ export function Tutorial() {
       }}
       closeOnClickOutside={false}
       centered
-      lockScroll={false}
+      lockScroll={isMobile}
       fullScreen={isMobile}
     >
       <FocusTrap.InitialFocus />
