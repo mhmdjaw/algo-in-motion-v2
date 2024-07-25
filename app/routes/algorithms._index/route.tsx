@@ -1,5 +1,9 @@
 import { redirect } from '@remix-run/react'
 
-export async function clientLoader() {
+export const clientLoader = () => {
   return redirect('/algorithms/quick-sort')
+}
+
+export default function Algorithms() {
+  return null
 }

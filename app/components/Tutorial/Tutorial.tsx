@@ -3,12 +3,19 @@ import { Button, FocusTrap, Modal, Text, useMantineTheme } from '@mantine/core'
 import styles from './Tutorial.module.css'
 import { useDisclosure, useMediaQuery } from '@mhmdjawhar/react-hooks'
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa6'
+import { useCallback } from 'react'
+import { Logo } from '~/assets/svg'
 
 export function Tutorial() {
   const theme = useMantineTheme()
   const isMobile = useMediaQuery(`(max-width: ${theme.breakpoints.md})`)
 
-  const [opened, { close }] = useDisclosure(true)
+  const [opened, { close }] = useDisclosure((localStorage.getItem('tutorial') ?? 'open') === 'open')
+
+  const onClose = useCallback(() => {
+    localStorage.setItem('tutorial', 'closed')
+    close()
+  }, [close])
 
   return (
     <Modal
@@ -16,7 +23,7 @@ export function Tutorial() {
       size="xl"
       withCloseButton={false}
       padding={0}
-      onClose={close}
+      onClose={onClose}
       classNames={{
         content: styles.modalContent,
         body: styles.modalBody,
@@ -44,58 +51,85 @@ export function Tutorial() {
         nextControlIcon={<FaChevronRight size={20} />}
         withIndicators
       >
-        <Carousel.Slide>
-          <div className={styles.slideMedia}>
-            <img
-              src="https://images.unsplash.com/photo-1508193638397-1c4234db14d8?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=400&q=80"
-              alt="Cat"
-              style={{ width: '100%', height: '100%', objectFit: 'contain', display: 'block' }}
-            />
-          </div>
-          <div className={styles.slideContent}>
-            <Text className={styles.slideTitle}>Welcome!</Text>
-            <Text className={styles.slideText}>
-              Feel free to skip the tutorial by clicking the button below.
-            </Text>
-          </div>
-        </Carousel.Slide>
-        <Carousel.Slide>
-          <div className={styles.slideMedia}>
-            <img
-              src="https://images.unsplash.com/photo-1559494007-9f5847c49d94?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=400&q=80"
-              alt="Cat"
-              style={{ width: '100%', height: '100%', objectFit: 'contain', display: 'block' }}
-            />
-          </div>
-          <div className={styles.slideContent}>
-            <Text className={styles.slideTitle}>Welcome!</Text>
-            <Text className={styles.slideText}>
-              Choose your algorithm from the menu list. Use the action button to run the visualizer
-              or reset it.
-            </Text>
-          </div>
-        </Carousel.Slide>
-        <Carousel.Slide>
-          <div className={styles.slideMedia}>
-            <img
-              src="https://images.unsplash.com/photo-1608481337062-4093bf3ed404?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=400&q=80"
-              alt="Cat"
-              style={{ width: '100%', height: '100%', objectFit: 'contain', display: 'block' }}
-            />
-          </div>
-          <div className={styles.slideContent}>
-            <Text className={styles.slideTitle}>Welcome!</Text>
-            <Text className={styles.slideText}>
-              Feel free to skip the tutorial by clicking the button below.
-            </Text>
-          </div>
-        </Carousel.Slide>
+        <CarouselSlides />
       </Carousel>
       <div className={styles.buttonContainer}>
-        <Button variant="retro-secondary" size="sm" onClick={close}>
+        <Button variant="retro-secondary" size="sm" onClick={onClose}>
           Close Tutorial
         </Button>
       </div>
     </Modal>
   )
 }
+
+function CarouselSlides() {
+  return carouselSlides.map((slide) => (
+    <Carousel.Slide key={slide.id}>
+      <div className={styles.slideMedia}>{slide.media}</div>
+      <div className={styles.slideContent}>
+        <Text className={styles.slideTitle}>{slide.title}</Text>
+        <Text>{slide.text}</Text>
+      </div>
+    </Carousel.Slide>
+  ))
+}
+
+const carouselSlides: {
+  id: string
+  media: React.ReactNode
+  title: string
+  text: string
+}[] = [
+  {
+    id: '1',
+    media: <Logo width="100%" height="100%" />,
+    title: 'Welcome!',
+    text: 'Feel free to skip the tutorial by clicking the button below.'
+  },
+  {
+    id: '2',
+    media: (
+      <video autoPlay loop muted playsInline>
+        <source src="/algorithm-dropdown.mp4" type="video/mp4" />
+      </video>
+    ),
+    title: 'Algorithms',
+    text: 'Choose an algorithm from the dropwdown menu.'
+  },
+  {
+    id: '3',
+    media: (
+      <video autoPlay loop muted playsInline>
+        <source src="/action-buttons.mp4" type="video/mp4" />
+      </video>
+    ),
+    title: 'Visualizing',
+    text: 'Use the action buttons to run the visualization, pause it, or reset it.'
+  },
+  {
+    id: '4',
+    media: <img src="/options.png" alt="options" />,
+    title: 'Options',
+    text: 'Each visualizer has a set of options you can change.'
+  },
+  {
+    id: '5',
+    media: (
+      <video autoPlay loop muted playsInline>
+        <source src="/draggable-nodes.mp4" type="video/mp4" />
+      </video>
+    ),
+    title: 'Draggable Nodes',
+    text: 'Drag nodes and space them to your liking.'
+  },
+  {
+    id: '6',
+    media: (
+      <video autoPlay loop muted playsInline>
+        <source src="/khara.mp4" type="video/mp4" />
+      </video>
+    ),
+    title: 'Explanation',
+    text: 'Scroll down to learn more about the algorithm and visualization.'
+  }
+]
