@@ -126,7 +126,7 @@ const carouselSlides: {
     id: '6',
     media: (
       <video autoPlay loop muted playsInline>
-        <source src="/khara.mp4" type="video/mp4" />
+        <source src="/explanation.mp4" type="video/mp4" />
       </video>
     ),
     title: 'Explanation',

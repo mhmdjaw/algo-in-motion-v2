@@ -4,7 +4,7 @@ import { useLocation } from '@remix-run/react'
 import { resetAllSlices, useBoundStore } from '~/store'
 import { useCallback, useEffect } from 'react'
 import { ALGORITHM_HANDLE } from '~/static'
-import { useDebounce } from '@mhmdjawhar/react-hooks'
+import { useDebounce, useResetChild } from '@mhmdjawhar/react-hooks'
 
 const sizeAlgorithms = [ALGORITHM_HANDLE.QUICK_SORT, ALGORITHM_HANDLE.MERGE_SORT]
 const nodesAlgorithms = [ALGORITHM_HANDLE.BFS, ALGORITHM_HANDLE.DFS]
@@ -30,7 +30,6 @@ export function Options() {
   const resetVisualizer = useBoundStore((s) => s.resetVisualizer)
   const isRunning = useBoundStore((s) => s.isRunning)
 
-  const speed = useBoundStore((s) => s.speed)
   const size = useBoundStore((s) => s.size)
   const nodes = useBoundStore((s) => s.nodes)
   const edges = useBoundStore((s) => s.edges)
@@ -50,9 +49,12 @@ export function Options() {
     [debounceSpeed]
   )
 
+  const [key, resetKey] = useResetChild()
+
   useEffect(() => {
+    resetKey()
     resetAllSlices()
-  }, [location])
+  }, [location, resetKey])
 
   return (
     <div className={styles.container}>
@@ -121,7 +123,13 @@ export function Options() {
       )}
       <Stack className={styles.optionContainer}>
         <Text className={styles.label}>Speed</Text>
-        <Slider w="100%" defaultValue={speed} onChange={onChangeSpeed} disabled={isRunning} />
+        <Slider
+          key={key}
+          w="100%"
+          defaultValue={100}
+          onChange={onChangeSpeed}
+          disabled={isRunning}
+        />
       </Stack>
     </div>
   )
