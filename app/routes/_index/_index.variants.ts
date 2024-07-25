@@ -15,12 +15,11 @@ export const svgContainer: Variants = {
 
 export const svgContainerMobile: Variants = {
   hidden: {
-    rotate: -180,
-    x: '-50%'
+    rotate: -180
   },
   visible: {
     rotate: 0,
-    x: '-50%',
+    x: ['-50%', '-50%', '-50%', '-50%'],
     y: ['50%', '50%', '50%', '-5%'],
     transition: { duration: 2, ease: 'easeInOut' }
   }

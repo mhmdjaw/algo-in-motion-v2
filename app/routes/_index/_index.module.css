@@ -20,7 +20,7 @@
 
   @mixin smaller-than $mantine-breakpoint-sm {
     width: 70vmin;
-    transform: translateX(-50%) translateY(-5%);
+    transform: translateX(0) translateY(-5%);
   }
 }
 
