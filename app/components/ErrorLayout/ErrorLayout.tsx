@@ -12,7 +12,7 @@ export function ErrorLayout({ message }: ErrorLayoutProps) {
     <>
       <main className={styles.main}>
         <Center className={styles.center}>
-          <Logo width={100} />
+          <Logo width={150} />
           <Title fz={60}>OOPS!</Title>
           <Text fw="var(--mantine-fw-md)" fz={24}>
             {message}
