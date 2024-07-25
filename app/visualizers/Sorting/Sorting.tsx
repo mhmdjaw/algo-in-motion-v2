@@ -118,7 +118,7 @@ export function Sorting({ algorithm }: { algorithm: AlgorithmKey }) {
   }, [algorithm, array])
 
   useEffect(() => {
-    if (isRunning) {
+    if (isRunning && array.length) {
       if (animationIndex.current === 0) {
         getAnimations()
       }
@@ -127,7 +127,7 @@ export function Sorting({ algorithm }: { algorithm: AlgorithmKey }) {
     } else if (isPaused) {
       animationCancel()
     }
-  }, [isRunning, isPaused, animationRun, animationCancel, getAnimations])
+  }, [isRunning, isPaused, animationRun, animationCancel, getAnimations, array.length])
 
   useLayoutEffect(() => {
     if (shouldReset) resetArray()

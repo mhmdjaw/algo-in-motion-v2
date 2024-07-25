@@ -151,7 +151,7 @@ export function TravelingSalesman() {
   const debounce = useDebounce(resetCities, 100, [resetCities])
 
   useEffect(() => {
-    if (isRunning) {
+    if (isRunning && distances.current.length) {
       if (animationIndex.current === 0) {
         animations.current = travelingSalesman(distances.current)
       }

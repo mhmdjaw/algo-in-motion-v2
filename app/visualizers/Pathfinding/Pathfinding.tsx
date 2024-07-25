@@ -156,7 +156,7 @@ export function Pathfinding() {
   }, [isGenerationcomplete])
 
   useEffect(() => {
-    if (isRunning) {
+    if (isRunning && mazeSize.current.rows) {
       if (animationIndex.current === 0) {
         getAnimations()
       }

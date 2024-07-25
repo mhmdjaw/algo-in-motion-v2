@@ -120,13 +120,13 @@ export function TimesTables() {
   }, [animationCancel, pointsCount, delta, stageHeight, stageWidth, colors.PINK, colors.BLUE])
 
   useEffect(() => {
-    if (isRunning) {
+    if (isRunning && points.length) {
       previousTimeStamp.current = Date.now()
       animationRun()
     } else if (isPaused) {
       animationCancel()
     }
-  }, [isRunning, animationRun, animationCancel, isPaused])
+  }, [isRunning, animationRun, animationCancel, isPaused, points.length])
 
   useLayoutEffect(() => {
     if (shouldReset) resetTimesTables()

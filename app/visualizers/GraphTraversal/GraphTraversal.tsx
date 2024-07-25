@@ -156,7 +156,7 @@ export function GraphTraversal({ algorithm }: { algorithm: AlgorithmKey }) {
   }, [algorithm, graph.nodes])
 
   useEffect(() => {
-    if (isRunning) {
+    if (isRunning && graph.nodes.length) {
       if (animationIndex.current === 0) {
         getAnimations()
       }
@@ -165,7 +165,7 @@ export function GraphTraversal({ algorithm }: { algorithm: AlgorithmKey }) {
     } else if (isPaused) {
       animationCancel()
     }
-  }, [isRunning, animationRun, animationCancel, isPaused, getAnimations])
+  }, [isRunning, animationRun, animationCancel, isPaused, getAnimations, graph.nodes.length])
 
   useEffect(() => {
     if (shouldReset) {
