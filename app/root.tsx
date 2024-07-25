@@ -1,8 +1,8 @@
 /* imoprt styles */
 import './styles/normalize.css'
 import './styles/app.css'
-import '@mantine/core/styles.css'
-import '@mantine/carousel/styles.css'
+import '@mantine/core/styles.layer.css'
+import '@mantine/carousel/styles.layer.css'
 
 import type { LinksFunction } from '@remix-run/node'
 import {

@@ -1,31 +1,36 @@
-html {
-  height: 100%;
-}
+/* layer order */
+@layer reset, mantine, app;
 
-body {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-}
+@layer app {
+  html {
+    height: 100%;
+  }
 
-main {
-  flex: 1 0 auto;
-  position: relative;
-  z-index: 1;
-  background-color: var(--mantine-color-body);
-  border-bottom: var(--mantine-border-width) solid var(--mantine-border-color);
-  box-shadow: var(--mantine-shadow-xl);
-}
+  body {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
 
-header {
-  flex-shrink: 0;
-}
+  main {
+    flex: 1 0 auto;
+    position: relative;
+    z-index: 1;
+    background-color: var(--mantine-color-body);
+    border-bottom: var(--mantine-border-width) solid var(--mantine-border-color);
+    box-shadow: var(--mantine-shadow-xl);
+  }
 
-footer {
-  flex-shrink: 0;
-  background-color: var(--mantine-color-dark-8);
-}
+  header {
+    flex-shrink: 0;
+  }
 
-.alert-title {
-  font-size: rem(16);
+  footer {
+    flex-shrink: 0;
+    background-color: var(--mantine-color-dark-8);
+  }
+
+  .alert-title {
+    font-size: rem(16);
+  }
 }
