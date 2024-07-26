@@ -7,7 +7,7 @@ const initialOptionsState = {
   size: 310,
   nodes: 12,
   edges: 0,
-  points: 200,
+  points: 700,
   cities: 6
 }
 
