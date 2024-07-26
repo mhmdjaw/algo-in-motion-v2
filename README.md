@@ -1,5 +1,5 @@
 <p align="center">
-  <a  href="https://omarkreidly.me/">
+  <a  href="https://algoinmotion.xyz/">
 	  <img  alt="Omar Kreidly"  src="./public/favicon.svg"  width="300" />
   </a>
 </p>
