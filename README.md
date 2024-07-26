@@ -6,7 +6,7 @@
 
 <br />
 
-# Algo In Motion
+# 💫 Algo In Motion
 
 [Algo in Motion](https://algoinmotion.xyz/) is an algorithm visualizer for some of the most popular algorithms out there.
 
@@ -20,7 +20,7 @@ Currently, it includes visualizations for the following algorithms:
 - [Traveling Salesman](https://algoinmotion.xyz/algorithms/traveling-salesman)
 - [A\* Pathfinding](https://algoinmotion.xyz/algorithms/pathfinding)
 
-## Tools & Technologies
+## 🛠️ Tools & Technologies
 
 - [React-Konva](https://konvajs.org/docs/react/index.html) (Low level HTML5 2D canvas library - used in some visualizations)
 - [My Open Source Hooks Library](https://github.com/mhmdjaw/react-hooks) (Used for visualizers animations and state management)
@@ -28,7 +28,7 @@ Currently, it includes visualizations for the following algorithms:
 - [Mantine](https://mantine.dev/) (CSS modules based UI Library)
 - [Framer-Motion](https://www.framer.com/motion) (Used for landing page animations)
 
-## Contributions
+## 💎 Contributions
 
 Although not a utility library, it is still a fun project and entertaining web app. Therefore whether you would like to suggest new ideas or work on new visualizations you're always welcome.
 
