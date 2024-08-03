@@ -9,8 +9,17 @@ import { Link } from '@remix-run/react'
 
 export const meta: MetaFunction = () => {
   return [
-    { title: 'Algo In Motion' },
-    { name: 'description', content: 'Welcome to Algo In Motion, have fun!' }
+    { title: 'Algo in Motion' },
+    {
+      name: 'description',
+      content:
+        'Experience the mesmerizing world of some of the most popular algorithms brought to life through captivating and dynamic visualizations.'
+    },
+    {
+      name: 'og:title',
+      property: 'og:title',
+      content: 'Algo in Motion'
+    }
   ]
 }
 
