@@ -1,4 +1,3 @@
-import type { MetaFunction } from '@remix-run/node'
 import styles from './_index.module.css'
 import * as variants from './_index.variants'
 import { Logo } from '~/assets/svg'
@@ -6,15 +5,6 @@ import { LazyMotion, m, domAnimation } from 'framer-motion'
 import { Button, Stack, Title, useMantineTheme } from '@mantine/core'
 import { useMediaQuery } from '@mhmdjawhar/react-hooks'
 import { Link } from '@remix-run/react'
-import { getMetaProperties } from '~/helpers'
-
-export const meta: MetaFunction = ({ location }) => {
-  return getMetaProperties({
-    description:
-      'Experience the mesmerizing world of some of the most popular algorithms brought to life through captivating and dynamic visualizations.',
-    pathname: location.pathname
-  })
-}
 
 export default function Landing() {
   return (

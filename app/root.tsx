@@ -4,7 +4,7 @@ import './styles/app.css'
 import '@mantine/core/styles.layer.css'
 import '@mantine/carousel/styles.layer.css'
 
-import type { LinksFunction } from '@remix-run/node'
+import type { LinksFunction, MetaFunction } from '@remix-run/node'
 import {
   isRouteErrorResponse,
   Links,
@@ -17,6 +17,7 @@ import {
 import { ColorSchemeScript, MantineProvider } from '@mantine/core'
 import theme, { resolver } from './theme'
 import { ErrorLayout } from './components'
+import { getMetaProperties } from './helpers'
 
 export const links: LinksFunction = () => {
   return [
@@ -31,6 +32,15 @@ export const links: LinksFunction = () => {
     /* favicon */
     { rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' }
   ]
+}
+
+// dynamic meta that might change based on specific routes
+export const meta: MetaFunction = () => {
+  return getMetaProperties({
+    description:
+      'Experience the mesmerizing world of some of the most popular algorithms brought to life through captivating and dynamic visualizations.',
+    pathname: '/'
+  })
 }
 
 export function Layout({ children }: { children: React.ReactNode }) {
