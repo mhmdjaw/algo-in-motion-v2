@@ -1,12 +1,14 @@
 import type { MetaFunction } from '@remix-run/node'
+import { getMetaProperties } from '~/helpers'
 import { AlgorithmKey } from '~/static'
 import { GraphTraversal } from '~/visualizers'
 
-export const meta: MetaFunction = () => {
-  return [
-    { title: 'Algo In Motion | DFS' },
-    { name: 'description', content: 'DFS algorithm visualizer.' }
-  ]
+export const meta: MetaFunction = ({ location }) => {
+  return getMetaProperties({
+    title: 'DFS',
+    description: 'DFS algorithm visualizer.',
+    pathname: location.pathname
+  })
 }
 
 export default function DFS() {

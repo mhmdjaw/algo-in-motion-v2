@@ -1,11 +1,13 @@
 import type { MetaFunction } from '@remix-run/node'
+import { getMetaProperties } from '~/helpers'
 import { TravelingSalesman as TravelingSalesmanVisualizer } from '~/visualizers'
 
-export const meta: MetaFunction = () => {
-  return [
-    { title: 'Algo In Motion | Traveling Salesman' },
-    { name: 'description', content: 'Traveling Salesman algorithm visualizer.' }
-  ]
+export const meta: MetaFunction = ({ location }) => {
+  return getMetaProperties({
+    title: 'Traveling Salesman',
+    description: 'Traveling Salesman algorithm visualizer.',
+    pathname: location.pathname
+  })
 }
 
 export default function TravelingSalesman() {

@@ -39,6 +39,19 @@ export function Layout({ children }: { children: React.ReactNode }) {
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="author" content="moja" />
+        <meta name="creator" content="moja" />
+        <meta name="keywords" content="Algorithms,Visualization,Animation,Motion" />
+        <meta property="og:site_name" content="Algo in Motion" />
+        <meta property="og:locale" content="en_US" />
+        <meta property="og:image" content="https://algoinmotion.xyz/algoinmotion.png" />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="800" />
+        <meta property="og:image:alt" content="Algo in Motion" />
+        <meta property="og:type" content="website" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:image:alt" content="Algo in Motion" />
+        {/* <meta name='twitter:creator' content='@Mohamad__Jawhar' /> */}
         <Meta />
         <Links />
         <ColorSchemeScript defaultColorScheme="dark" />
